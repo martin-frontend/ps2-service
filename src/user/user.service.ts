@@ -9,11 +9,10 @@ export class UserService {
     constructor(
         @InjectModel('User') private readonly userModel: Model<User>,
     ) {}
-    async insertUser(account: string, password: string, email: string) {
+    async insertUser(account: string, password: string) {
         const newUser = new this.userModel({
           account,
-          password,
-          email
+          password
         });
         const result = await newUser.save();
         return result.id as string;
@@ -24,14 +23,14 @@ export class UserService {
           id: user.id,
           account: user.account,
           password: user.password,
-          email: user.email,
+          createdAt: user.createdAt,
+          updateAt: user.updateAt
         }));
     }
     async updateUser(
         userId:string,
         account: string,
         password: string,
-        email: string
       ) {
         const updatedProduct = await this.findUser(userId);
         if (account) {
@@ -39,9 +38,6 @@ export class UserService {
         }
         if (password) {
           updatedProduct.password = password;
-        }
-        if (email) {
-          updatedProduct.email = email;
         }
         updatedProduct.save();
     }

@@ -7,12 +7,10 @@ export class UserController {
     async addUser(
         @Body("account") account:string,
         @Body("password") password:string,
-        @Body("email") email:string
     ){
         const generatedUserId = await this.userService.insertUser(
             account,
             password,
-            email,
         );
         return { id: generatedUserId };        
     }
@@ -26,9 +24,8 @@ export class UserController {
         @Body('id') userId: string,
         @Body("account") account:string,
         @Body("password") password:string,
-        @Body("email") email:string
     ){
-        await this.userService.updateUser(userId, account, password, email);
+        await this.userService.updateUser(userId, account, password);
         return null;
     }
     @Delete()

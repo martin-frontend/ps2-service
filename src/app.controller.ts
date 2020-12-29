@@ -7,6 +7,6 @@ export class AppController {
   @Get()
   @Header('Content-Type', 'text/html')
   getHomeMsg() {
-    return "welcome bill's node test";
+    return "welcome";
   }
 }
