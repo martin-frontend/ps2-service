@@ -16,7 +16,7 @@ export class UserController {
         return { id: generatedUserId };        
     }
     @Get()
-    @UseGuards(new AuthGuard())
+    // @UseGuards(new AuthGuard())
     async getUser(){
         const users = await this.userService.getUsers();
         return users;

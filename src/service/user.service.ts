@@ -40,33 +40,16 @@ export class UserService {
         }
         updatedProduct.save();
     }
-
     async deleteUser(userId: string) {
         const result = await this.userModel.deleteOne({_id: userId}).exec();
         if (result.n === 0) {
           throw new NotFoundException('Could not find product.');
         }
-    }
-
-    private async findUser(id: string): Promise<User> {
-        let user;
-        try {
-            user = await this.userModel.findById(id).exec();
-        } catch (error) {
-          throw new NotFoundException('Could not find user.');
-        }
-        if (!user) {
-          throw new NotFoundException('Could not find user.');
-        }
-        return user;
-    }
-    async login(account: string,password:string): Promise<User> {
+    }     
+    async findUser(id: string): Promise<User> {
       let user;
       try {
-          user = await this.userModel.findOne({
-            account:account,
-            password:password,
-          })
+          user = await this.userModel.findById(id).exec();
       } catch (error) {
         throw new NotFoundException('Could not find user.');
       }
