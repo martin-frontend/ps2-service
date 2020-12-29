@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post, Patch,Delete } from '@nestjs/common';
-import {UserService} from '@service/user.service'
+import { Body, Controller, Get, Post, Patch,Delete, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../shared/auth.guard';
+import { UserService } from '@service/user.service'
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
@@ -15,6 +16,7 @@ export class UserController {
         return { id: generatedUserId };        
     }
     @Get()
+    @UseGuards(new AuthGuard())
     async getUser(){
         const users = await this.userService.getUsers();
         return users;
