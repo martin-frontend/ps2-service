@@ -2,14 +2,12 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from 'src/api/user/user.module';
+import { UserModule } from './user/user.module';
 
 // import { ConfigModule, ConfigService } from '@nestjs/config';
-import { LoginModule } from 'src/api/login/login.module';
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb+srv://penbillpopo:075717169@billcluster.jrgs2.mongodb.net/ps2_service?retryWrites=true&w=majority',{ useNewUrlParser: true }),
-    // forRootAsync尚有錯誤暫時跳過config方式介接
     // MongooseModule.forRoot('mongodb+srv://develop:1qaz@WSX@sandbox.gywtz.mongodb.net/sandbox?retryWrites=true&w=majority',{ useNewUrlParser: true }),
     // ConfigModule.forRoot({ isGlobal: true }),
     // MongooseModule.forRootAsync({
@@ -27,7 +25,6 @@ import { LoginModule } from 'src/api/login/login.module';
     //   }),
     // }),
     UserModule,
-    LoginModule,
   ],
   controllers: [AppController],
   providers: [AppService],
