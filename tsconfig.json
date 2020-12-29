@@ -14,9 +14,6 @@
     "paths": {
       "@libs/*": ["./src/libs/*"],
       "@service/*": ["src/service/*"],
-      "@model/*": ["src/model/*"],
-      "@module/*": ["src/module/*"],
-      "@controller/*": ["src/controller/*"],
     }
   },
 }

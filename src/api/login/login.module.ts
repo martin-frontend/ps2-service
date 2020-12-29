@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { LoginController } from '@controller/login.controller';
+import { LoginController } from 'src/api/login/login.controller';
 
 @Module({
   controllers: [LoginController]

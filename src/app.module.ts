@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from '@module/user.module';
+import { UserModule } from 'src/api/user/user.module';
 
 // import { ConfigModule, ConfigService } from '@nestjs/config';
-import { LoginModule } from '@module/login.module';
+import { LoginModule } from 'src/api/login/login.module';
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb+srv://penbillpopo:075717169@billcluster.jrgs2.mongodb.net/ps2_service?retryWrites=true&w=majority',{ useNewUrlParser: true }),
