@@ -1,8 +1,7 @@
 import { Injectable,NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from './user.model';
-
+import { User } from '@model/user.model';
 
 @Injectable()
 export class UserService {
@@ -24,7 +23,7 @@ export class UserService {
           account: user.account,
           password: user.password,
           createdAt: user.createdAt,
-          updateAt: user.updateAt
+          updatedAt: user.updatedAt
         }));
     }
     async updateUser(
