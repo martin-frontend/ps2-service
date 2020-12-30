@@ -16,9 +16,9 @@ export class LoginController {
             body.password,
         );
         if(user){
-            return {islogin:true}
+            return {"success":true,"content":{islogin:true},"msg":"查詢成功"}
         }else{
-            return {islogin:false}
+            return {"success":false,"content":{islogin:false},"msg":"查無資料"}
         }
     }
 }
