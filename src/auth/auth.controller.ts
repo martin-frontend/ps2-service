@@ -10,6 +10,13 @@ export class AuthController {
     ){
         const generatedtoken = await this.authService.createToken(id);
         return { token_data: generatedtoken };        
-    }    
+    }
+    @Post('auth/validate')
+    async validate(
+        @Body("token") token:string,
+    ){
+        const isValidate = await this.authService.validate(token);
+        return { isValidate: isValidate };        
+    }
 }
  
