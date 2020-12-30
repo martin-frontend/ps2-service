@@ -1,19 +1,25 @@
-import { Controller,Post,Body } from '@nestjs/common';
+import { Controller,Post,Body,UseInterceptors } from '@nestjs/common';
 import {AuthService} from '@service/auth.service'
+import { FileInterceptor } from '@nestjs/platform-express';
+
 
 @Controller('login')
 export class LoginController {
     constructor(private readonly authService: AuthService) {}
     @Post()
+    @UseInterceptors(FileInterceptor('body'))
     async login(
-        @Body("account") account:string,
-        @Body("password") password:string,
+        @Body() body
     ){
-        const generatedUserId = await this.authService.login(
-            account,
-            password,
+        const user = await this.authService.login(
+            body.account,
+            body.password,
         );
-        return { id: generatedUserId };        
+        if(user){
+            return {islogin:true}
+        }else{
+            return {islogin:false}
+        }
     }
 }
- 
+

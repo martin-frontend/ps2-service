@@ -26,8 +26,8 @@ export class AuthService {
     }
     async validate(token:string): Promise<boolean> {
         const decoded:any = jwt.verify(token, 'popo')
-        const user = await this.findUser(decoded.id);
-        console.log(user)
+        console.log(decoded.id)
+        // const user = await this.findUser(decoded.id);
         return false;
     }
     // async validate(payload: object): Promise<boolean> {
@@ -52,7 +52,7 @@ export class AuthService {
           throw new NotFoundException('Could not find user.');
         }
         if (!user) {
-          throw new NotFoundException('Could not find user.');
+          return null;
         }
         return user;
     }   

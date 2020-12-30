@@ -10,6 +10,6 @@ export class AuthGuard implements CanActivate { // 實作CanActive介面
     const request = context.switchToHttp().getRequest();
     
     console.log(request.headers);
-    return false;
+    return true;
   }
 }
