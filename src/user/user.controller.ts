@@ -21,6 +21,10 @@ export class UserController {
         const users = await this.userService.getUsers();
         return users;
     }    
+    @Get('/getinfo')
+    async getinfo(){
+        return {"success":true,"content":{role:"超級管理員",roles:""},"msg":"查詢成功"}
+    }    
     @Patch()
     async updateUser(
         @Body('id') userId: string,
