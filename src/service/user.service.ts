@@ -8,7 +8,7 @@ export class UserService {
     constructor(
         @InjectModel('User') private readonly userModel: Model<User>,
     ) {}
-    async insertUser(account: string, password: string) {
+    async createUser(account: string, password: string) {
         const newUser = new this.userModel({
           account,
           password
@@ -32,18 +32,27 @@ export class UserService {
         password: string,
       ) {
         const updatedProduct = await this.findUser(userId);
-        if (account) {
-          updatedProduct.account = account;
+        if(updatedProduct){
+          if (account) {
+            updatedProduct.account = account;
+          }
+          if (password) {
+            updatedProduct.password = password;
+          }
+          updatedProduct.save();
+          return true;
         }
-        if (password) {
-          updatedProduct.password = password;
+        else{
+          return false;
         }
-        updatedProduct.save();
     }
     async deleteUser(userId: string) {
         const result = await this.userModel.deleteOne({_id: userId}).exec();
         if (result.n === 0) {
-          throw new NotFoundException('Could not find product.');
+          return false;
+        }
+        else{
+          return true;
         }
     }     
     async findUser(id: string): Promise<User> {

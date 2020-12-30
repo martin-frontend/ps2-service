@@ -30,17 +30,6 @@ export class AuthService {
         // const user = await this.findUser(decoded.id);
         return false;
     }
-    // async validate(payload: object): Promise<boolean> {
-    //     const user = await this.findUser(payload['ID']);
-    //     //有該筆資料，回傳true
-    //     if (user) {
-    //         return true;
-    //     }
-    //     //沒該筆資料回傳false
-    //     else {
-    //         return false;
-    //     }
-    // }
     async login(account: string,password:string): Promise<User> {
         let user;
         try {

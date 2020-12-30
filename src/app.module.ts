@@ -7,6 +7,7 @@ import { LoginModule } from './login/login.module';
 import { AuthModule } from './auth/auth.module';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthorityModule } from './authority/authority.module';
 @Module({
   imports: [
     // MongooseModule.forRoot('mongodb+srv://penbillpopo:075717169@billcluster.jrgs2.mongodb.net/ps2_service?retryWrites=true&w=majority',{ useNewUrlParser: true }),
@@ -27,7 +28,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     UserModule,
     LoginModule,
-    AuthModule
+    AuthModule,
+    AuthorityModule
   ],
   controllers: [AppController],
   providers: [AppService],
