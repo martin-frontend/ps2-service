@@ -43,7 +43,7 @@ export class UserController {
             return {"success":false,"content":null,"msg":"更新失敗"}
         }
     }
-    @Post('deleteuser')
+    @Post('/deleteuser')
     @UseInterceptors(FileInterceptor('body'))
     async deleteUser(
         @Body() body

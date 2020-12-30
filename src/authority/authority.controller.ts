@@ -28,7 +28,29 @@ export class AuthorityController {
         }else{
             return {"success":false,"content":null,"msg":"查無資料"}
         }
-    }    
-
-
+    }
+    @Post('/updaterole')
+    @UseInterceptors(FileInterceptor('body'))
+    async updateUser(
+        @Body() body
+    ){
+        const Roles = await this.authService.updateRole(body.id, body.name, body.roles);
+        if(Roles){
+            return {"success":true,"content":null,"msg":"更新成功"}
+        }else{
+            return {"success":false,"content":null,"msg":"更新失敗"}
+        }
+    }
+    @Post('/deleterole')
+    @UseInterceptors(FileInterceptor('body'))
+    async deleteUser(
+        @Body() body
+    ){
+        const Roles = await this.authService.deleteUser(body.id)
+        if(Roles){
+            return {"success":true,"content":null,"msg":"刪除成功"}
+        }else{
+            return {"success":false,"content":null,"msg":"刪除失敗"}
+        }
+    }
 }
