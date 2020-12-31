@@ -44,7 +44,7 @@ export class AuthorityService {
           return false;
         }
     }
-    async deleteUser(id: string) {
+    async deleteRole(id: string) {
         const result = await this.authorityRolesModel.deleteOne({_id: id}).exec();
         if (result.n === 0) {
           return false;

@@ -5,6 +5,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('authority')
 export class AuthorityController {
     constructor(private readonly authService: AuthorityService) {}
+    
     @Post('/createrole')
     @UseInterceptors(FileInterceptor('body'))
     async createRole(
@@ -31,7 +32,7 @@ export class AuthorityController {
     }
     @Post('/updaterole')
     @UseInterceptors(FileInterceptor('body'))
-    async updateUser(
+    async updateRole(
         @Body() body
     ){
         const Roles = await this.authService.updateRole(body.id, body.name, body.roles);
@@ -43,10 +44,10 @@ export class AuthorityController {
     }
     @Post('/deleterole')
     @UseInterceptors(FileInterceptor('body'))
-    async deleteUser(
+    async deleteRole(
         @Body() body
     ){
-        const Roles = await this.authService.deleteUser(body.id)
+        const Roles = await this.authService.deleteRole(body.id)
         if(Roles){
             return {"success":true,"content":null,"msg":"刪除成功"}
         }else{
