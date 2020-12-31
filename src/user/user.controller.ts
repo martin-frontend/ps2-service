@@ -19,7 +19,7 @@ export class UserController {
             body.account,
             body.password,
             body.status,
-            body.role_id,
+            body.roleId,
         );
         switch(res){
             case 0:
@@ -72,13 +72,13 @@ export class UserController {
     async getinfo(@Request() req){
         const validateUser:any = await this.authService.validateUser(req.cookies.AuthCookie)
         if(validateUser!==null){
-            console.log(validateUser.role_id)
             const user = await this.authService.findUser(validateUser.id)
-            const role = await this.authService.findUserRole(user.role_id)
+            const role = await this.authService.findUserRole(user.roleId)
             return {"success":true,"content":{role:role.name,roles:role.roles},"msg":"查詢成功"}
         }
         else{
             return {"success":false,"content":null,"msg":"無登入權限"}
         }
+        //"查詢帳號資訊,查詢遊戲歷程,查詢新增帳戶,查詢營收付費,查詢活躍帳戶,查詢留存統計,查詢線上公告,查詢帳號停權,查詢發送物品,查詢活動序號,查詢管理帳號,修改權限設定,查詢權限設定,修改管理帳號,修改線上公告,修改發送物品,修改活動序號,修改帳號停權"
     }
 }

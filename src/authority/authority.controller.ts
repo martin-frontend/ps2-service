@@ -1,10 +1,12 @@
 import { Controller,Post,Get,Body,UseInterceptors } from '@nestjs/common';
 import {AuthorityService} from '@service/authority.service'
+import { UserService } from '@service/user.service'
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('authority')
 export class AuthorityController {
-    constructor(private readonly authService: AuthorityService) {}
+    constructor(private readonly authService: AuthorityService,
+        private readonly userService: UserService) {}
     
     @Post('/createrole')
     @UseInterceptors(FileInterceptor('body'))

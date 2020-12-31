@@ -4,7 +4,7 @@ export const UserSchema = new mongoose.Schema({
   account: { type: String, required: true },
   password: { type: String, required: true },
   status: { type: String, required: true },
-  role_id: { type: String, required: true },
+  roleId: { type: String, required: true },
 },{
   versionKey: false,
   timestamps: true,
@@ -15,7 +15,7 @@ export interface User extends mongoose.Document {
   account: string;
   password: string;
   status: string;
-  role_id:string;
+  roleId:string;
   createdAt: Date,
   updatedAt: Date
 }

@@ -13,7 +13,7 @@ export class UserService {
 
     ) {}
     //status
-    async createUser(account: string, password: string, status:string,role_id:string ) {
+    async createUser(account: string, password: string, status:string,roleId:string ) {
         const user = await this.userModel.findOne({
           account:account,
         })
@@ -25,24 +25,24 @@ export class UserService {
             account,
             password,
             status,
-            role_id
+            roleId
           });
           const res = await newUser.save();
           return res?0:1;
         }
     }
     async getUsers(){
-        const users = await this.userModel.find().exec();       
+        const users = await this.userModel.find().exec();
         let resArr = []
         for (let i = 0; i < users.length; i++) {
           let role = await this.authorityRolesModel.findOne({
-            _id:users[i].role_id,
+            _id:users[i].roleId,
           })
           resArr.push({
-            id: users[i].id,
+            id: users[i]._id,
             account: users[i].account,
             password: users[i].password,
-            role_id:role.id,
+            roleId:role._id,
             roleName:role.name,
             roles:role.roles,
             status: users[i].status,
@@ -88,5 +88,4 @@ export class UserService {
     async findUser(id: string): Promise<User> {
       let user = await this.userModel.findById(id).exec()
       return user;
-    }
-}
+    }}
