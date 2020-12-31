@@ -17,13 +17,19 @@ export class AuthController {
             body.password,
         );
         if(user){
-            const generatedjwt = await this.authService.createToken(user.id);
-            //一小時過期
-            res.cookie('AuthCookie',generatedjwt,{maxAge:3600*60,httpOnly:false})
-            res.send({"success":true,"content":{islogin:true},"msg":"查詢成功"})
+            if(user.status==='1'){
+                const generatedjwt = await this.authService.createToken(user.id);
+                //一小時過期
+                res.cookie('AuthCookie',generatedjwt,{maxAge:3600*6000,httpOnly:false})
+                res.send({"success":true,"content":{islogin:true},"msg":"登入成功"})
+            }
+            else{
+                res.send({"success":true,"content":{islogin:false},"msg":"使用者已遭停權，登入失敗"})
+            }
         }else{
-            res.send({"success":false,"content":{islogin:false},"msg":"查無資料"})
+            res.send({"success":false,"content":{islogin:false},"msg":"帳號或密碼錯誤，登入失敗"})
         }
+
     }
 }
  

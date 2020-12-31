@@ -49,11 +49,15 @@ export class AuthorityController {
     async deleteRole(
         @Body() body
     ){
-        const Roles = await this.authService.deleteRole(body.id)
-        if(Roles){
-            return {"success":true,"content":null,"msg":"刪除成功"}
+        const user = await this.userService.findUser({roleId:body.id})        
+        if(user){
+            return {"success":false,"content":null,"msg":"尚有使用者使用此權限，刪除失敗"}
         }else{
-            return {"success":false,"content":null,"msg":"刪除失敗"}
+            const Role = await this.authService.deleteRole(body.id)
+            if(Role)
+                return {"success":true,"content":null,"msg":"刪除成功"}
+            else    
+                return {"success":false,"content":null,"msg":"刪除失敗"}
         }
     }
 }

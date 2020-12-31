@@ -16,7 +16,7 @@ export class AuthService {
 
     async createToken(id: string) {
         //token到期時間
-        const expiresTime = 3600*60;
+        const expiresTime = 3600*6000;
         //重要，盡可能複雜些
         const secret = 'popo';        
         const jwtobj = jwt.sign({ id:id }, secret, { expiresIn: expiresTime });
@@ -25,7 +25,7 @@ export class AuthService {
     async validateUser(token:string): Promise<User> {
         if(token){
           const decoded:any = jwt.verify(token, 'popo')
-          const user = await this.findUser(decoded.id);
+          const user = await this.findUserById(decoded.id);
           return user;
         }else{
           return null;
@@ -46,7 +46,7 @@ export class AuthService {
         }
         return user;
     }   
-    async findUser(id: string): Promise<User> {
+    async findUserById(id: string): Promise<User> {
         let user = await this.userModel.findById(id).exec()
         return user;
     }

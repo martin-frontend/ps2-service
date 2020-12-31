@@ -56,9 +56,10 @@ export class UserService {
         userId:string,
         account: string,
         password: string,
-        status:string
+        status:string,
+        roleId:string,
       ) {
-        const updateUser = await this.findUser(userId);
+        const updateUser = await this.findUserById(userId);
         if(updateUser){
           if (account) {
             updateUser.account = account;
@@ -68,6 +69,9 @@ export class UserService {
           }
           if (status) {
             updateUser.status = status;
+          }
+          if (roleId) {
+            updateUser.roleId = roleId;
           }
           updateUser.save();
           return true;
@@ -85,7 +89,12 @@ export class UserService {
           return true;
         }
     }     
-    async findUser(id: string): Promise<User> {
+    async findUserById(id: string): Promise<User> {
       let user = await this.userModel.findById(id).exec()
       return user;
-    }}
+    }
+    async findUser(data:any): Promise<User> {
+      let user = await this.userModel.findOne(data).exec()
+      return user;
+    }
+}
