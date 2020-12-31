@@ -21,6 +21,7 @@ export class AuthorityService {
         return roles.map(role => ({
           id: role.id,
           roles: role.roles,
+          roleLevel:role.roleLevel,
           name: role.name
         }));
     }

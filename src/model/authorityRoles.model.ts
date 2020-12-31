@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 export const AuthorityRolesSchema = new mongoose.Schema({
   roles: { type: String, required: true },
-  role_level: { type: Number, required: false },
+  roleLevel: { type: Number, required: false,default:1 },
   name: { type: String, required: true },
 },{  
   timestamps: true,
@@ -12,7 +12,7 @@ export const AuthorityRolesSchema = new mongoose.Schema({
 export interface AuthorityRoles extends mongoose.Document {
   id: string;
   roles: string;
-  role_level: string;
+  roleLevel: string;
   name: string;
   createdAt: Date,
   updatedAt: Date

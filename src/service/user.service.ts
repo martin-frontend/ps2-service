@@ -45,6 +45,7 @@ export class UserService {
             roleId:role._id,
             roleName:role.name,
             roles:role.roles,
+            roleLevel:role.roleLevel,
             status: users[i].status,
             createdAt: moment(new Date(users[i].createdAt)).format('YYYY/MM/DD hh:mm:ss'),
             updatedAt: moment(new Date(users[i].updatedAt)).format('YYYY/MM/DD hh:mm:ss')
