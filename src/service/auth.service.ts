@@ -16,7 +16,7 @@ export class AuthService {
 
     async createToken(id: string) {
         //token到期時間
-        const expiresTime = 3600*24;
+        const expiresTime = 3600*60;
         //重要，盡可能複雜些
         const secret = 'popo';        
         const jwtobj = jwt.sign({ id:id }, secret, { expiresIn: expiresTime });
@@ -51,7 +51,7 @@ export class AuthService {
         return user;
     }
     async findUserRole(userid: string): Promise<AuthorityRoles> {
-      let role = await this.authorityRolesModel.findOne({_id:userid})
+      let role = await this.authorityRolesModel.findById(userid)
       return role;
     }
 

@@ -18,7 +18,8 @@ export class AuthController {
         );
         if(user){
             const generatedjwt = await this.authService.createToken(user.id);
-            res.cookie('AuthCookie',generatedjwt,{maxAge:3600,httpOnly:false})
+            //一小時過期
+            res.cookie('AuthCookie',generatedjwt,{maxAge:3600*60,httpOnly:false})
             res.send({"success":true,"content":{islogin:true},"msg":"查詢成功"})
         }else{
             res.send({"success":false,"content":{islogin:false},"msg":"查無資料"})

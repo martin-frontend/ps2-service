@@ -5,7 +5,10 @@ export const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   status: { type: String, required: true },
   role_id: { type: String, required: true },
-},{  timestamps: true });
+},{
+  versionKey: false,
+  timestamps: true,
+});
 
 export interface User extends mongoose.Document {
   id: string;
