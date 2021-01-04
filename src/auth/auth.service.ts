@@ -16,16 +16,12 @@ export class AuthService {
     async login(loginDTO:LoginDTO): Promise<User> {
         let user;
         const {account,password} = loginDTO
-        try {
-            user = await this.userModel.findOne({
-              account:account,
-              password:password,
-            })
-        } catch (error) {
-          throw new NotFoundException('Could not find user.');
-        }
+        user = await this.userModel.findOne({
+          account:account,
+          password:password,
+        })
         if (!user) {
-          return null;
+          throw new NotFoundException();
         }
         return user;
     }
@@ -47,11 +43,17 @@ export class AuthService {
         }
     }
     async findUserById(id: string): Promise<User> {
-        let user = await this.userModel.findById(id).exec()
+        const user = await this.userModel.findById(id).exec()
+        if (!user) {
+          throw new NotFoundException();
+        }
         return user;
     }
     async findUserRole(userid: string): Promise<AuthorityRoles> {
-        let role = await this.authorityRolesModel.findById(userid)
+        const role = await this.authorityRolesModel.findById(userid)
+        if (!role) {
+          throw new NotFoundException();
+        }
         return role;
     }
 

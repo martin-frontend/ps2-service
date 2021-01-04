@@ -13,9 +13,7 @@ export class AuthController {
         @Body() loginDTO:LoginDTO,
         @Response() res
     ){
-        const user = await this.authService.login(
-            loginDTO
-        );
+        const user = await this.authService.login(loginDTO);
         if(user){
             if(user.status==='1'){
                 const generatedjwt = await this.authService.createToken(user.id);

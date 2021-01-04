@@ -78,7 +78,7 @@ export class UserService {
           return true;
         }
         else{
-          return false;
+          throw new NotFoundException();
         }
     }
     async deleteUser(deleteUserDTO:DeleteUserDTO) {
@@ -93,10 +93,16 @@ export class UserService {
     }     
     async findUserById(id: string): Promise<User> {
       let user = await this.userModel.findById(id).exec()
+      if(!user){
+        throw new NotFoundException();
+      }
       return user;
     }
     async findUser(data:any): Promise<User> {
       let user = await this.userModel.findOne(data).exec()
+      if(!user){
+        throw new NotFoundException();
+      }
       return user;
     }
 }

@@ -12,11 +12,7 @@ export class AuthorityService {
         @InjectModel('AuthorityRoles') private readonly authorityRolesModel: Model<AuthorityRoles>,
     ) {}
     async createRole(createRoleDTO:CreateRoleDTO) {
-        const {name,roles} = createRoleDTO
-        const newAuthRolesModel = new this.authorityRolesModel({
-            name,
-            roles
-        });
+        const newAuthRolesModel = new this.authorityRolesModel(createRoleDTO);
         const result = await newAuthRolesModel.save();
         return result.id as string;
     }
@@ -31,19 +27,18 @@ export class AuthorityService {
     }
     async updateRole(updateRoleDTO:UpdateRoleDTO) {
         const {id,name,roles} = updateRoleDTO
-        const Role = await this.findRole(id);
-        if(Role){
+        const role = await this.findRole(id);
+        if(!role)
+          throw new NotFoundException();
+        else{
           if (name) {
-            Role.name = name;
+            role.name = name;
           }
           if (roles) {
-            Role.roles = roles;
+            role.roles = roles;
           }
-          Role.save();
+          role.save();
           return true;
-        }
-        else{
-          return false;
         }
     }
     async deleteRole(deleteRoleDTO:DeleteRoleDTO) {
@@ -57,14 +52,9 @@ export class AuthorityService {
         }
     }    
     async findRole(id: string): Promise<AuthorityRoles> {
-        let role;
-        try {
-            role = await this.authorityRolesModel.findById(id).exec();
-        } catch (error) {
-          throw new NotFoundException('Could not find role.');
-        }
+        const role = await this.authorityRolesModel.findById(id).exec();       
         if (!role) {
-          throw new NotFoundException('Could not find role.');
+          throw new NotFoundException();
         }
         return role;
       }

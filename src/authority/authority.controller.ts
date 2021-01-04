@@ -51,7 +51,6 @@ export class AuthorityController {
     @Post('/deleterole')
     @UseInterceptors(FileInterceptor('body'))
     @UsePipes(ValidationPipe)
-
     async deleteRole(
         @Body() deleteRoleDTO:DeleteRoleDTO
     ){
