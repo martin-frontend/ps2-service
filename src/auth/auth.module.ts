@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthController } from './auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from 'src/model/user.model';
-import { AuthorityRolesSchema } from 'src/model/authorityRoles.model';
+import { UserSchema } from 'src/user/user.model';
+import { AuthorityRolesSchema } from 'src/authority/authorityRoles.model';
 
 
 @Module({

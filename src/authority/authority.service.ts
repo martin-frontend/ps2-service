@@ -1,7 +1,7 @@
 import { Injectable,NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AuthorityRoles } from 'src/model/authorityRoles.model';
+import { AuthorityRoles } from 'src/authority/authorityRoles.model';
 
 @Injectable()
 export class AuthorityService {
