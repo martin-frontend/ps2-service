@@ -1,3 +1,6 @@
+import { DeleteUserDTO } from './dto/delete-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
+import { CreateUserDTO } from './dto/create-user.dto';
 import { Body, Controller, Get, Post,Request,UseInterceptors,UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../shared/auth.guard';
 import { UserService } from 'src/user/user.service'
@@ -6,7 +9,6 @@ import { AuthService } from 'src/auth/auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
-import { MyResponseDTO } from './dto/get-permission.dto';
 
 @Controller('user')
 export class UserController {
@@ -15,13 +17,10 @@ export class UserController {
     @Post('/createUser')
     @UseInterceptors(FileInterceptor('body'))
     async addUser(
-        @Body() body,
+       @Body() createUserDTO:CreateUserDTO
     ){
         const res = await this.userService.createUser(
-            body.account,
-            body.password,
-            body.status,
-            body.roleId,
+            createUserDTO
         );
         switch(res){
             case 0:
@@ -48,9 +47,9 @@ export class UserController {
     @Post('/updateuser')
     @UseInterceptors(FileInterceptor('body'))
     async updateUser(
-        @Body() body,
+        @Body() updateUserDTO:UpdateUserDTO,
     ){
-        const users = await this.userService.updateUser(body.id, body.account, body.password,body.status,body.roleId);
+        const users = await this.userService.updateUser(updateUserDTO);
         if(users){
             return {"success":true,"content":null,"msg":"更新成功"}
         }else{
@@ -60,9 +59,9 @@ export class UserController {
     @Post('/deleteuser')
     @UseInterceptors(FileInterceptor('body'))
     async deleteUser(
-        @Body() body
+        @Body() deleteUserDTO:DeleteUserDTO
     ){
-        const users = await this.userService.deleteUser(body.id);
+        const users = await this.userService.deleteUser(deleteUserDTO);
         //TDD
         // if (!users) {
         //     return new ExceptionsHandler();

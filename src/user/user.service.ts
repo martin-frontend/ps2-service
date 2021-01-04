@@ -1,3 +1,6 @@
+import { DeleteUserDTO } from './dto/delete-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
+import { CreateUserDTO } from './dto/create-user.dto';
 import { Injectable,NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -10,10 +13,10 @@ export class UserService {
     constructor(
         @InjectModel('User') private readonly userModel: Model<User>,
         @InjectModel('AuthorityRoles') private readonly authorityRolesModel: Model<AuthorityRoles>,
-
     ) {}
     //status
-    async createUser(account: string, password: string, status:string,roleId:string ) {
+    async createUser(createUserDTO:CreateUserDTO) {
+        const {account,password,status,roleId} = createUserDTO;
         const user = await this.userModel.findOne({
           account:account,
         })
@@ -54,13 +57,10 @@ export class UserService {
         return resArr;
     }
     async updateUser(
-        userId:string,
-        account: string,
-        password: string,
-        status:string,
-        roleId:string,
+        updateUserDTO:UpdateUserDTO
       ) {
-        const updateUser = await this.findUserById(userId);
+        const {id,account,password,status,roleId} = updateUserDTO;
+        const updateUser = await this.findUserById(id);
         if(updateUser){
           if (account) {
             updateUser.account = account;
@@ -81,8 +81,9 @@ export class UserService {
           return false;
         }
     }
-    async deleteUser(userId: string) {
-        const res = await this.userModel.deleteOne({_id: userId}).exec();
+    async deleteUser(deleteUserDTO:DeleteUserDTO) {
+      const {id} = deleteUserDTO;
+        const res = await this.userModel.deleteOne({_id: id}).exec();
         if (res.n === 0) {
           return false;
         }
