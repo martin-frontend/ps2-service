@@ -1,5 +1,5 @@
 import { LoginDTO } from './dto/login.dto';
-import { Controller,Post,Body,UseInterceptors,Response } from '@nestjs/common';
+import { Controller,Post,Body,UseInterceptors,Response, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -8,6 +8,7 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}   
     @Post('login')
     @UseInterceptors(FileInterceptor('body'))
+    @UsePipes(ValidationPipe)
     async login(
         @Body() loginDTO:LoginDTO,
         @Response() res

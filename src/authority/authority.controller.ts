@@ -1,7 +1,7 @@
 import { DeleteRoleDTO } from './dto/delete-role.dto';
 import { UpdateRoleDTO } from './dto/update-role.dto';
 import { CreateRoleDTO } from './dto/create-role.dto';
-import { Controller,Post,Get,Body,UseInterceptors } from '@nestjs/common';
+import { Controller,Post,Get,Body,UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import {AuthorityService} from 'src/authority/authority.service'
 import { UserService } from 'src/user/user.service'
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -13,6 +13,7 @@ export class AuthorityController {
     
     @Post('/createrole')
     @UseInterceptors(FileInterceptor('body'))
+    @UsePipes(ValidationPipe)
     async createRole(
         @Body() createRoleDTO:CreateRoleDTO
     ){
@@ -32,8 +33,10 @@ export class AuthorityController {
             return {"success":false,"content":null,"msg":"查無資料"}
         }
     }
+
     @Post('/updaterole')
     @UseInterceptors(FileInterceptor('body'))
+    @UsePipes(ValidationPipe)
     async updateRole(
         @Body() updateRoleDTO:UpdateRoleDTO
     ){
@@ -44,8 +47,11 @@ export class AuthorityController {
             return {"success":false,"content":null,"msg":"更新失敗"}
         }
     }
+    
     @Post('/deleterole')
     @UseInterceptors(FileInterceptor('body'))
+    @UsePipes(ValidationPipe)
+
     async deleteRole(
         @Body() deleteRoleDTO:DeleteRoleDTO
     ){

@@ -1,7 +1,7 @@
 import { DeleteUserDTO } from './dto/delete-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { CreateUserDTO } from './dto/create-user.dto';
-import { Body, Controller, Get, Post,Request,UseInterceptors,UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post,Request,UseInterceptors,UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '../shared/auth.guard';
 import { UserService } from 'src/user/user.service'
 import { AuthService } from 'src/auth/auth.service';
@@ -16,6 +16,7 @@ export class UserController {
     constructor(private readonly userService: UserService,
         private readonly authService: AuthService) {}
     @Post('/createUser')
+    @UsePipes(ValidationPipe)
     @UseInterceptors(FileInterceptor('body'))
     async addUser(
        @Body() createUserDTO:CreateUserDTO
@@ -47,6 +48,7 @@ export class UserController {
     }
     @Post('/updateuser')
     @UseInterceptors(FileInterceptor('body'))
+    @UsePipes(ValidationPipe)
     async updateUser(
         @Body() updateUserDTO:UpdateUserDTO,
     ){
@@ -57,8 +59,10 @@ export class UserController {
             return {"success":false,"content":null,"msg":"更新失敗"}
         }
     }
+
     @Post('/deleteuser')
     @UseInterceptors(FileInterceptor('body'))
+    @UsePipes(ValidationPipe)
     async deleteUser(
         @Body() deleteUserDTO:DeleteUserDTO
     ){
@@ -73,6 +77,7 @@ export class UserController {
             return {"success":false,"content":null,"msg":"刪除失敗"}
         }
     }
+    
     @Get('/getinfo')  
     async getinfo(@Request() req){
         const validateUser:any = await this.authService.validateUser(req.cookies.AuthCookie)
