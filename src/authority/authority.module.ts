@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthorityController } from './authority.controller';
-import { AuthorityService } from '../service/authority.service';
-import { UserService } from '@service/user.service'
+import { AuthorityService } from './authority.service';
+import { UserService } from 'src/user/user.service'
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthorityRolesSchema } from 'src/model/authorityRoles.model';
 import { UserSchema } from 'src/model/user.model';

@@ -1,5 +1,5 @@
 import { Controller,Post,Body,UseInterceptors,Response } from '@nestjs/common';
-import { AuthService } from '@service/auth.service';
+import { AuthService } from 'src/auth/auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller()
@@ -24,7 +24,7 @@ export class AuthController {
                 res.send({"success":true,"content":{islogin:true},"msg":"登入成功"})
             }
             else{
-                res.send({"success":true,"content":{islogin:false},"msg":"使用者已遭停權，登入失敗"})
+                res.send({"success":false,"content":{islogin:false},"msg":"使用者已遭停權，登入失敗"})
             }
         }else{
             res.send({"success":false,"content":{islogin:false},"msg":"帳號或密碼錯誤，登入失敗"})

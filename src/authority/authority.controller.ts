@@ -1,6 +1,6 @@
 import { Controller,Post,Get,Body,UseInterceptors } from '@nestjs/common';
-import {AuthorityService} from '@service/authority.service'
-import { UserService } from '@service/user.service'
+import {AuthorityService} from 'src/authority/authority.service'
+import { UserService } from 'src/user/user.service'
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('authority')
