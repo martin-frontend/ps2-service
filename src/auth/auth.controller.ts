@@ -1,20 +1,19 @@
+import { LoginDTO } from './dto/login.dto';
 import { Controller,Post,Body,UseInterceptors,Response } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller()
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
-   
+    constructor(private readonly authService: AuthService) {}   
     @Post('login')
     @UseInterceptors(FileInterceptor('body'))
     async login(
-        @Body() body,
+        @Body() loginDTO:LoginDTO,
         @Response() res
     ){
         const user = await this.authService.login(
-            body.account,
-            body.password,
+            loginDTO
         );
         if(user){
             if(user.status==='1'){

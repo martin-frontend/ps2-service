@@ -8,6 +8,7 @@ import { AuthService } from 'src/auth/auth.service';
 
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+import * as dotenv from "dotenv"
 
 
 @Controller('user')
