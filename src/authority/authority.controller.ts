@@ -1,3 +1,6 @@
+import { DeleteRoleDTO } from './dto/delete-role.dto';
+import { UpdateRoleDTO } from './dto/update-role.dto';
+import { CreateRoleDTO } from './dto/create-role.dto';
 import { Controller,Post,Get,Body,UseInterceptors } from '@nestjs/common';
 import {AuthorityService} from 'src/authority/authority.service'
 import { UserService } from 'src/user/user.service'
@@ -11,12 +14,9 @@ export class AuthorityController {
     @Post('/createrole')
     @UseInterceptors(FileInterceptor('body'))
     async createRole(
-        @Body() body
+        @Body() createRoleDTO:CreateRoleDTO
     ){
-        const Roles = await this.authService.createRole(
-            body.name,
-            body.roles,
-        );
+        const Roles = await this.authService.createRole(createRoleDTO);
         if(Roles){
             return {"success":true,"content":null,"msg":"新增成功"}
         }else{
@@ -35,9 +35,9 @@ export class AuthorityController {
     @Post('/updaterole')
     @UseInterceptors(FileInterceptor('body'))
     async updateRole(
-        @Body() body
+        @Body() updateRoleDTO:UpdateRoleDTO
     ){
-        const Roles = await this.authService.updateRole(body.id, body.name, body.roles);
+        const Roles = await this.authService.updateRole(updateRoleDTO);
         if(Roles){
             return {"success":true,"content":null,"msg":"更新成功"}
         }else{
@@ -47,13 +47,14 @@ export class AuthorityController {
     @Post('/deleterole')
     @UseInterceptors(FileInterceptor('body'))
     async deleteRole(
-        @Body() body
+        @Body() deleteRoleDTO:DeleteRoleDTO
     ){
-        const user = await this.userService.findUser({roleId:body.id})        
+        const {id} = deleteRoleDTO
+        const user = await this.userService.findUser({roleId:id})        
         if(user){
             return {"success":false,"content":null,"msg":"尚有使用者使用此權限，刪除失敗"}
         }else{
-            const Role = await this.authService.deleteRole(body.id)
+            const Role = await this.authService.deleteRole(deleteRoleDTO)
             if(Role)
                 return {"success":true,"content":null,"msg":"刪除成功"}
             else    

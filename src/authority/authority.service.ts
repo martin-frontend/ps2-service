@@ -1,3 +1,6 @@
+import { DeleteRoleDTO } from './dto/delete-role.dto';
+import { UpdateRoleDTO } from './dto/update-role.dto';
+import { CreateRoleDTO } from './dto/create-role.dto';
 import { Injectable,NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -8,7 +11,8 @@ export class AuthorityService {
     constructor(
         @InjectModel('AuthorityRoles') private readonly authorityRolesModel: Model<AuthorityRoles>,
     ) {}
-    async createRole(name: string, roles: string) {
+    async createRole(createRoleDTO:CreateRoleDTO) {
+        const {name,roles} = createRoleDTO
         const newAuthRolesModel = new this.authorityRolesModel({
             name,
             roles
@@ -25,11 +29,8 @@ export class AuthorityService {
           name: role.name
         }));
     }
-    async updateRole(
-        id: string,
-        name:string,
-        roles: string,
-      ) {
+    async updateRole(updateRoleDTO:UpdateRoleDTO) {
+        const {id,name,roles} = updateRoleDTO
         const Role = await this.findRole(id);
         if(Role){
           if (name) {
@@ -45,7 +46,8 @@ export class AuthorityService {
           return false;
         }
     }
-    async deleteRole(id: string) {
+    async deleteRole(deleteRoleDTO:DeleteRoleDTO) {
+        const {id} = deleteRoleDTO;
         const result = await this.authorityRolesModel.deleteOne({_id: id}).exec();
         if (result.n === 0) {
           return false;
