@@ -40,26 +40,34 @@ export class AnalysisService {
         }
     }
     //1:DAU、2:WAU、3:MAU、4:NRU
-    async getUser(getAnalysisUserDTO:GetAnalysisUserDTO) {
-        const {mode,startDate,endDate} = getAnalysisUserDTO
-        let _startDate = new Date(startDate)
-        let _endDate = new Date(endDate)
-        switch(mode){
-            case "1":
-                const user = await this.analysisUserModel.find({
-                    createdAt:{
-                        $gte:_startDate,
-                        $lte:_endDate
-                    }
-                })
-                return user;
-            case "2":
-                return 2;
-            case "3":
-                return 3;
-            case "4":
-                return 4;
-        }
+    // async getUser(getAnalysisUserDTO:GetAnalysisUserDTO) {
+    //     const {mode,startDate,endDate} = getAnalysisUserDTO
+    //     let _startDate = new Date(startDate)
+    //     let _endDate = new Date(endDate)
+    //     switch(mode){
+    //         case "1":
+    //             const user = await this.analysisUserModel.find({
+    //                 createdAt:{
+    //                     $gte:_startDate,
+    //                     $lte:_endDate
+    //                 }
+    //             })
+    //             return user;
+    //         case "2":
+    //             return 2;
+    //         case "3":
+    //             return 3;
+    //         case "4":
+    //             return 4;
+    //     }
+    // }
+    async getUserDAU (){        
+    }
+    async getUserWAU (){        
+    }
+    async getUserMAU (){        
+    }
+    async getUserNRU (){        
     }
     
     async createEvent(createAnalysisEventDTO:CreateAnalysisEventDTO) {
