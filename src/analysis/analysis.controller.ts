@@ -27,8 +27,8 @@ export class AnalysisController {
     async getUser(
         @Body() getAnalysisUserDTO:GetAnalysisUserDTO
     ){
-        const user = await this.analysisService.getUser(getAnalysisUserDTO)
-        return user;
+        // const user = await this.analysisService.getUser(getAnalysisUserDTO)
+        // return user;
     }
     @Post('/event')
     @UseInterceptors(FileInterceptor('body'))

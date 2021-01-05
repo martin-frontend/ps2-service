@@ -9,6 +9,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthorityModule } from './authority/authority.module';
 import { AnalysisModule } from './analysis/analysis.module';
 import { OperationModule } from './operation/operation.module';
+import { CommandModule } from 'nestjs-command';
+
 @Module({
   imports: [
     // MongooseModule.forRoot('mongodb+srv://penbillpopo:075717169@billcluster.jrgs2.mongodb.net/ps2_service?retryWrites=true&w=majority',{ useNewUrlParser: true }),
@@ -31,7 +33,8 @@ import { OperationModule } from './operation/operation.module';
     AuthModule,
     AuthorityModule,
     AnalysisModule,
-    OperationModule
+    OperationModule,
+    CommandModule
   ],
   controllers: [AppController],
   providers: [AppService],
