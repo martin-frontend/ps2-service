@@ -1,9 +1,9 @@
 import { CreateAnalysisEventDTO } from './dto/event/create-analysis-event.dto';
 import { CreateAnalysisUserDTO } from './dto/user/create-analysis-user.dto';
+import { GetAnalysisUserDTO } from './dto/user/get-analysis-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Controller, Post, UsePipes, ValidationPipe, UseInterceptors, Body } from '@nestjs/common';
 import { AnalysisService } from 'src/analysis/analysis.service';
-import { GetAnalysisUserDTO } from './dto/user/get-analysis-user.dto';
 
 @Controller('analysis')
 export class AnalysisController {
@@ -27,7 +27,8 @@ export class AnalysisController {
     async getUser(
         @Body() getAnalysisUserDTO:GetAnalysisUserDTO
     ){
-        
+        const user = await this.analysisService.getUser(getAnalysisUserDTO)
+        return user;
     }
     @Post('/event')
     @UseInterceptors(FileInterceptor('body'))

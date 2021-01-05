@@ -8,6 +8,8 @@ import { Model } from 'mongoose';
 import { AnalysisUserModel } from 'src/analysis/analysisUser.model';
 import { AnalysisUserLogModel } from 'src/analysis/analysisUserLog.model';
 import { AnalysisEventModel } from './analysisEvent.model';
+import * as moment from 'moment'
+
 
 
 @Injectable()
@@ -40,16 +42,23 @@ export class AnalysisService {
     //1:DAU、2:WAU、3:MAU、4:NRU
     async getUser(getAnalysisUserDTO:GetAnalysisUserDTO) {
         const {mode,startDate,endDate} = getAnalysisUserDTO
+        let _startDate = new Date(startDate)
+        let _endDate = new Date(endDate)
         switch(mode){
             case "1":
-                // const user = await this.analysisUserModel.where('createdAt').lt()
-                break;
+                const user = await this.analysisUserModel.find({
+                    createdAt:{
+                        $gte:_startDate,
+                        $lte:_endDate
+                    }
+                })
+                return user;
             case "2":
-                break;
+                return 2;
             case "3":
-                break;
+                return 3;
             case "4":
-                break;
+                return 4;
         }
     }
     
