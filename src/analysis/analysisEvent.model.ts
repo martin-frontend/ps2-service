@@ -10,10 +10,10 @@ export const analysisEventSchema = new mongoose.Schema({
 });
 
 export interface AnalysisEventModel extends mongoose.Document {
-  id: string;
-  account: string;
-  event: string;
-  data: string;
-  createdAt: Date,
+  id: string
+  account: string
+  event: string
+  data: string
+  createdAt: Date
   updatedAt: Date
 }

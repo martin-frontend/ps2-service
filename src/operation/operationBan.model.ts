@@ -10,9 +10,9 @@ export const operationBanSchema = new mongoose.Schema({
 });
 
 export interface OperationBanModel extends mongoose.Document {
-  id: string;
-  bannedDate: String;
-  releaseDate: String;
-  createdAt: Date,
+  id: string
+  bannedDate: String
+  releaseDate: String
+  createdAt: Date
   updatedAt: Date
 }

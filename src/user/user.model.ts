@@ -11,11 +11,11 @@ export const UserSchema = new mongoose.Schema({
 });
 
 export interface User extends mongoose.Document {
-  id: string;
-  account: string;
-  password: string;
-  status: string;
-  roleId:string;
-  createdAt: Date,
+  id: string
+  account: string
+  password: string
+  status: string
+  roleId:string
+  createdAt: Date
   updatedAt: Date
 }

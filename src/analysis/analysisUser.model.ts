@@ -9,9 +9,9 @@ export const analysisUserSchema = new mongoose.Schema({
 });
 
 export interface AnalysisUserModel extends mongoose.Document {
-  id: string;
-  account: string;
-  accountName: string;
-  createdAt: Date,
+  id: string
+  account: string
+  accountName: string
+  createdAt: Date
   updatedAt: Date
 }

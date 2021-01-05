@@ -10,10 +10,10 @@ export const AuthorityRolesSchema = new mongoose.Schema({
 });
 
 export interface AuthorityRoles extends mongoose.Document {
-  id: string;
-  roles: string;
-  roleLevel: string;
-  name: string;
-  createdAt: Date,
+  id: string
+  roles: string
+  roleLevel: string
+  name: string
+  createdAt: Date
   updatedAt: Date
 }
