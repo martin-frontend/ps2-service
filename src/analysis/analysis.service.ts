@@ -17,12 +17,14 @@ export class AnalysisService {
         @InjectModel('AnalysisEvent') private readonly analysisEventModel: Model<AnalysisEventModel>,
     ) {}
     async createUser(createAnalysisUserDTO:CreateAnalysisUserDTO) {
-        const {account} = createAnalysisUserDTO
+        const {account,accountName} = createAnalysisUserDTO
         const user = await this.analysisUserModel.findOne({
             account:account,
         })
         if(user){
-            const newLog = new this.analysisUserLogModel({userid:user.id});        
+            const newLog = new this.analysisUserLogModel({userid:user.id});  
+            user.accountName = accountName
+            await user.save()      
             const resLog = await newLog.save();
             if(!resLog)
                 throw new NotFoundException();
