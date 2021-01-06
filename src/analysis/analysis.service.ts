@@ -65,28 +65,6 @@ export class AnalysisService {
       return resUser;
     }
   }
-
-  // @Cron('0 5 0 * * 1-7')
-  async createDau() {
-    const todayDate = new Date();
-    todayDate.setHours(0, 0, 0, 0);
-    const yesterdayDate = new Date();
-    yesterdayDate.setDate(yesterdayDate.getDate() - 1)
-    yesterdayDate.setHours(0, 0, 0, 0);
-    const dauData = await this.analysisUserLogModel.aggregate([
-      { $match: { createdAt: { $gte: yesterdayDate,$lte:todayDate } } },
-      { $group: { _id: '$userid', count: { $sum: 1 } } },
-      { $group: { _id: 'ymd', dau: { $sum: 1 } } },
-    ]);
-    let dau = 0;
-    if(dauData && dauData.length>0)
-      dau = dauData[0].dau;
-    else
-      throw new NotFoundException();
-    const newDau = new this.analysisUserDauModel({dau:dau,date:yesterdayDate});
-    newDau.save()
-    return newDau;
-  }
   async getUserDAU(getAnalysisUserDTO: GetAnalysisUserDTO) {
     const { startDate, endDate } = getAnalysisUserDTO;
     const _startDate = new Date(startDate);
@@ -107,5 +85,27 @@ export class AnalysisService {
     const newEvent = new this.analysisEventModel(createAnalysisEventDTO);
     const res = await newEvent.save();
     return res;
+  }
+  // @Cron('0 5 0 * * 1-7')
+  // @Cron('* * * * * *')
+  async createDau() {
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+    const yesterdayDate = new Date();
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1)
+    yesterdayDate.setHours(0, 0, 0, 0);
+    const dauData = await this.analysisUserLogModel.aggregate([
+      { $match: { createdAt: { $gte: yesterdayDate,$lte:todayDate } } },
+      { $group: { _id: '$userid', count: { $sum: 1 } } },
+      { $group: { _id: 'ymd', dau: { $sum: 1 } } },
+    ]);
+    let dau = 0;
+    if(dauData && dauData.length>0)
+      dau = dauData[0].dau;
+    else
+      throw new NotFoundException();
+    const newDau = new this.analysisUserDauModel({dau:dau,date:yesterdayDate});
+    newDau.save()
+    return newDau;
   }
 }
