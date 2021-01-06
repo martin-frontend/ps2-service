@@ -65,20 +65,73 @@ export class AnalysisService {
       return resUser;
     }
   }
+  async getDauForToday() {
+    const _todayDate = new Date();
+    _todayDate.setHours(0, 0, 0, 0);
+    const user = await this.analysisUserLogModel.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: _todayDate,
+          },
+        },
+      },
+      { $group: { _id: '$userid', count: { $sum: 1 } } },
+      { $group: { _id: 'ymd', dau: { $sum: 1 } } },
+    ]);
+    return user;
+  }
+  logModeAggregate (startDate) {
+    return this.analysisUserLogModel.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: startDate
+          }
+        }
+      },
+      {
+        $group: {
+          _id:"$userid"
+        }
+      },
+      {
+        $group: {
+          _id: startDate,
+          dau: {
+            "$sum":1
+          }
+        }
+      }
+    ])
+  }
   async getUserDAU(getAnalysisUserDTO: GetAnalysisUserDTO) {
     const { startDate, endDate } = getAnalysisUserDTO;
     const _startDate = new Date(startDate);
     const _endDate = new Date(endDate);
     const _todayDate = new Date();
     _todayDate.setHours(0,0,0,0);
-    const user = await this.analysisUserLogModel.aggregate([
-        {$match:{createdAt:{$gte:_todayDate}}},
-        {$group:{_id:"$userid",count:{$sum:1}}},
-        {$group:{_id:"ymd",dau:{"$sum":1}}}])
+    const user = await this.analysisUserDauModel.find({"date" : { $gt: _startDate, $lt: _endDate }})
+    if(_endDate.getTime() == _todayDate.getTime()) { //需轉毫秒比較
+      const todayUser = await this.logModeAggregate(_todayDate)
+      todayUser[0]["date"] =  todayUser[0]["_id"]
+      return todayUser.concat(...user)
+    }
     return user;
   }
-  async getUserWAU() {}
-  async getUserMAU() {}
+  // async getUserWAU(getAnalysisUserDTO: GetAnalysisUserDTO) {
+  //   const day = new Date().getDay() || 7; // Sunday - Saturday : 0 - 6
+  //   const firstDayOfWeek = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1 - day)
+  //   // const lastDayOfWeek = new Date(firstDayOfWeek.getTime() - 1)
+  //   const user = await this.logModeAggregate(firstDayOfWeek)
+  //   return user;
+  // }
+  // async getUserMAU(getAnalysisUserDTO: GetAnalysisUserDTO) {
+  //   const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 0)
+  //   console.log(firstDayOfMonth);
+  //   const user = await this.logModeAggregate(firstDayOfMonth)
+  //   return user;
+  // }
   async getUserNRU() {}
 
   async createEvent(createAnalysisEventDTO: CreateAnalysisEventDTO) {

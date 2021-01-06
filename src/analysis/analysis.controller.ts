@@ -34,11 +34,26 @@ export class AnalysisController {
     // const user = await this.analysisService.getUser(getAnalysisUserDTO)
     // return user;
   }
-  @Get('/getuserdau')
+  @Post('/getUserDAU')
   async getUserDAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const dau = await this.analysisService.getUserDAU(getAnalysisUserDTO);
-    return dau;
+    const newDau = dau.map((item) => [item["date"],item["dau"]])
+    return newDau;
   }
+//   @Post('/getUserWAU')
+//   @UseInterceptors(FileInterceptor('body'))
+//   @UsePipes(ValidationPipe)
+//   async getUserWAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
+//     const wau = await this.analysisService.getUserWAU(getAnalysisUserDTO);
+//     return wau;
+//   }
+//   @Post('/getUserMAU')
+//   @UseInterceptors(FileInterceptor('body'))
+//   @UsePipes(ValidationPipe)
+//   async getUserMAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
+//     const mau = await this.analysisService.getUserMAU(getAnalysisUserDTO);
+//     return mau;
+//   }
   @Post('/event')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
