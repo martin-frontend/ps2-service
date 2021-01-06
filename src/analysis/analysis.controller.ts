@@ -27,8 +27,17 @@ export class AnalysisController {
     async getUser(
         @Body() getAnalysisUserDTO:GetAnalysisUserDTO
     ){
-        const user = await this.analysisService.getUser(getAnalysisUserDTO)
-        return user;
+        // const user = await this.analysisService.getUser(getAnalysisUserDTO)
+        // return user;
+    }
+    @Post('/getUserDAU')
+    @UseInterceptors(FileInterceptor('body'))
+    @UsePipes(ValidationPipe)
+    async getUserDAU(
+        @Body() getAnalysisUserDTO:GetAnalysisUserDTO
+    ){
+        const dau = await this.analysisService.getUserDAU(getAnalysisUserDTO)
+        return dau;
     }
     @Post('/event')
     @UseInterceptors(FileInterceptor('body'))

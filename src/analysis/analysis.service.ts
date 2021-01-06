@@ -42,8 +42,8 @@ export class AnalysisService {
     //1:DAU、2:WAU、3:MAU、4:NRU
     // async getUser(getAnalysisUserDTO:GetAnalysisUserDTO) {
     //     const {mode,startDate,endDate} = getAnalysisUserDTO
-    //     let _startDate = new Date(startDate)
-    //     let _endDate = new Date(endDate)
+    //     const _startDate = new Date(startDate)
+    //     const _endDate = new Date(endDate)
     //     switch(mode){
     //         case "1":
     //             const user = await this.analysisUserModel.find({
@@ -61,7 +61,17 @@ export class AnalysisService {
     //             return 4;
     //     }
     // }
-    async getUserDAU (){        
+    async getUserDAU (getAnalysisUserDTO:GetAnalysisUserDTO){
+        const {startDate,endDate} = getAnalysisUserDTO
+        const _startDate = new Date(startDate)
+        const _endDate = new Date(endDate)
+        const _todayDate = new Date();
+        _todayDate.setHours(0,0,0,0);
+        const user = await this.analysisUserLogModel.aggregate([
+            {$match:{createdAt:{$gte:_todayDate}}},
+            {$group:{_id:"$userid",count:{$sum:1}}},
+            {$group:{_id:"ymd",dau:{"$sum":1}}}])
+        return user;
     }
     async getUserWAU (){        
     }

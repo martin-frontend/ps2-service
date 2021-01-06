@@ -10,8 +10,8 @@ export class GetAnalysisUserDTO {
     @IsString()
     endDate: string;
 
-    @IsNotEmpty()
-    @IsString()
-    mode: string;
+    // @IsNotEmpty()
+    // @IsString()
+    // mode: string;
 
 }
