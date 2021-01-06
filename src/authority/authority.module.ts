@@ -6,7 +6,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthorityRolesSchema } from 'src/authority/authorityRoles.model';
 import { UserSchema } from 'src/user/user.model';
 
-
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),

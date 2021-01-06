@@ -39,6 +39,7 @@
     "moment": "^2.29.1",
     "mongoose": "^5.11.8",
     "nestjs-command": "^1.5.3",
+    "node-cron": "^2.0.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3",
