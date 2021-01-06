@@ -112,7 +112,7 @@ export class AnalysisService {
     const _todayDate = new Date();
     _todayDate.setHours(0,0,0,0);
     const user = await this.analysisUserDauModel.find({"date" : { $gt: _startDate, $lt: _endDate }})
-    if(_endDate.getTime() == _todayDate.getTime()) { //需轉毫秒比較
+    if(_endDate.getTime() > _todayDate.getTime()) { //需轉毫秒比較
       const todayUser = await this.logModeAggregate(_todayDate)
       todayUser[0]["date"] =  todayUser[0]["_id"]
       return todayUser.concat(...user)
