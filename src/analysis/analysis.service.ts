@@ -8,6 +8,8 @@ import { Model } from 'mongoose';
 import { AnalysisUserModel } from 'src/analysis/analysisUser.model';
 import { AnalysisUserLogModel } from 'src/analysis/analysisUserLog.model';
 import { AnalysisEventModel } from './analysisEvent.model';
+import { AnalysisUserDauModel } from './analysisUserDau.model';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class AnalysisService {
@@ -18,6 +20,8 @@ export class AnalysisService {
     private readonly analysisUserLogModel: Model<AnalysisUserLogModel>,
     @InjectModel('AnalysisEvent')
     private readonly analysisEventModel: Model<AnalysisEventModel>,
+    @InjectModel('AnalysisUserDau')
+    private readonly analysisUserDauModel: Model<AnalysisUserDauModel>,
   ) {}
   async createUser(createAnalysisUserDTO: CreateAnalysisUserDTO) {
     const { account, accountName } = createAnalysisUserDTO;
@@ -61,55 +65,39 @@ export class AnalysisService {
       return resUser;
     }
   }
-  //1:DAU、2:WAU、3:MAU、4:NRU
-  // async getUser(getAnalysisUserDTO:GetAnalysisUserDTO) {
-  //     const {mode,startDate,endDate} = getAnalysisUserDTO
-  //     const _startDate = new Date(startDate)
-  //     const _endDate = new Date(endDate)
-  //     switch(mode){
-  //         case "1":
-  //             const user = await this.analysisUserModel.find({
-  //                 createdAt:{
-  //                     $gte:_startDate,
-  //                     $lte:_endDate
-  //                 }
-  //             })
-  //             return user;
-  //         case "2":
-  //             return 2;
-  //         case "3":
-  //             return 3;
-  //         case "4":
-  //             return 4;
-  //     }
-  // }
-  async getDauForToday() {
-    const _todayDate = new Date();
-    _todayDate.setHours(0, 0, 0, 0);
-    const user = await this.analysisUserLogModel.aggregate([
-      {
-        $match: {
-          createdAt: {
-            $gte: _todayDate,
-          },
-        },
-      },
+
+  // @Cron('0 5 0 * * 1-7')
+  async createDau() {
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+    const yesterdayDate = new Date();
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1)
+    yesterdayDate.setHours(0, 0, 0, 0);
+    const dauData = await this.analysisUserLogModel.aggregate([
+      { $match: { createdAt: { $gte: yesterdayDate,$lte:todayDate } } },
       { $group: { _id: '$userid', count: { $sum: 1 } } },
       { $group: { _id: 'ymd', dau: { $sum: 1 } } },
     ]);
-    return user;
+    let dau = 0;
+    if(dauData && dauData.length>0)
+      dau = dauData[0].dau;
+    else
+      throw new NotFoundException();
+    const newDau = new this.analysisUserDauModel({dau:dau,date:yesterdayDate});
+    newDau.save()
+    return newDau;
   }
   async getUserDAU(getAnalysisUserDTO: GetAnalysisUserDTO) {
     const { startDate, endDate } = getAnalysisUserDTO;
     const _startDate = new Date(startDate);
     const _endDate = new Date(endDate);
-    // const _todayDate = new Date();
-    // _todayDate.setHours(0,0,0,0);
-    // const user = await this.analysisUserLogModel.aggregate([
-    //     {$match:{createdAt:{$gte:_todayDate}}},
-    //     {$group:{_id:"$userid",count:{$sum:1}}},
-    //     {$group:{_id:"ymd",dau:{"$sum":1}}}])
-    // return user;
+    const _todayDate = new Date();
+    _todayDate.setHours(0,0,0,0);
+    const user = await this.analysisUserLogModel.aggregate([
+        {$match:{createdAt:{$gte:_todayDate}}},
+        {$group:{_id:"$userid",count:{$sum:1}}},
+        {$group:{_id:"ymd",dau:{"$sum":1}}}])
+    return user;
   }
   async getUserWAU() {}
   async getUserMAU() {}

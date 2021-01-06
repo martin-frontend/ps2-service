@@ -1,3 +1,4 @@
+import { analysisUserDauSchema, AnalysisUserDauName } from './analysisUserDau.model';
 import { AnalysisSeed } from './analysis.seed';
 import { Module } from '@nestjs/common';
 import { AnalysisController } from './analysis.controller';
@@ -20,6 +21,9 @@ import { analysisEventSchema, EventName } from './analysisEvent.model';
     ]),
     MongooseModule.forFeature([
       { name: EventName, schema: analysisEventSchema },
+    ]),
+    MongooseModule.forFeature([
+      { name: AnalysisUserDauName, schema: analysisUserDauSchema },
     ]),
   ],
   controllers: [AnalysisController],

@@ -10,6 +10,7 @@ import { AuthorityModule } from './authority/authority.module';
 import { AnalysisModule } from './analysis/analysis.module';
 import { OperationModule } from './operation/operation.module';
 import { CommandModule } from 'nestjs-command';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { CommandModule } from 'nestjs-command';
     AnalysisModule,
     OperationModule,
     CommandModule,
+    ScheduleModule.forRoot()
   ],
   controllers: [AppController],
   providers: [AppService],

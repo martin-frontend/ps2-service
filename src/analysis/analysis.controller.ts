@@ -9,6 +9,7 @@ import {
   ValidationPipe,
   UseInterceptors,
   Body,
+  Get,
 } from '@nestjs/common';
 import { AnalysisService } from 'src/analysis/analysis.service';
 
@@ -33,9 +34,7 @@ export class AnalysisController {
     // const user = await this.analysisService.getUser(getAnalysisUserDTO)
     // return user;
   }
-  @Post('/getUserDAU')
-  @UseInterceptors(FileInterceptor('body'))
-  @UsePipes(ValidationPipe)
+  @Get('/getuserdau')
   async getUserDAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const dau = await this.analysisService.getUserDAU(getAnalysisUserDTO);
     return dau;
