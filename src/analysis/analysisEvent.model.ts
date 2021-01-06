@@ -17,3 +17,5 @@ export interface AnalysisEventModel extends mongoose.Document {
   createdAt: Date
   updatedAt: Date
 }
+
+export const EventName = "AnalysisEvent";

@@ -1,12 +1,12 @@
 import { MongooseModule } from '@nestjs/mongoose';
-import { operationBanSchema } from './operationBan.model';
+import { BanName,operationBanSchema } from './operationBan.model';
 import { Module } from '@nestjs/common';
 import { OperationController } from './operation.controller';
 import { OperationService } from './operation.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'OperationBan', schema: operationBanSchema }]),
+    MongooseModule.forFeature([{ name: BanName, schema: operationBanSchema }]),
   ],
   controllers: [OperationController],
   providers: [OperationService]

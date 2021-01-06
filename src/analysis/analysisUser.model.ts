@@ -15,3 +15,5 @@ export interface AnalysisUserModel extends mongoose.Document {
   createdAt: Date
   updatedAt: Date
 }
+
+export const AnalysisUserName = "AnalysisUser";

@@ -16,3 +16,5 @@ export interface OperationBanModel extends mongoose.Document {
   createdAt: Date
   updatedAt: Date
 }
+
+export const BanName = "OperationBan";

@@ -13,3 +13,5 @@ export interface AnalysisUserLogModel extends mongoose.Document {
   createdAt: Date
   updatedAt: Date
 }
+
+export const AnalysisUserLogName = "AnalysisUserLog";

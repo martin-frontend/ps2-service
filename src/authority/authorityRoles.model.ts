@@ -17,3 +17,5 @@ export interface AuthorityRoles extends mongoose.Document {
   createdAt: Date
   updatedAt: Date
 }
+
+export const RolesName = "AuthorityRoles";

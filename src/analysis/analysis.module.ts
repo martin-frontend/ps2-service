@@ -3,16 +3,16 @@ import { Module } from '@nestjs/common';
 import { AnalysisController } from './analysis.controller';
 import { AnalysisService } from './analysis.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { analysisUserSchema } from './analysisUser.model';
-import { analysisUserLogSchema } from './analysisUserLog.model';
-import { analysisEventSchema } from './analysisEvent.model';
+import { analysisUserSchema,AnalysisUserName } from './analysisUser.model';
+import { analysisUserLogSchema,AnalysisUserLogName } from './analysisUserLog.model';
+import { analysisEventSchema,EventName } from './analysisEvent.model';
 
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'AnalysisUser', schema: analysisUserSchema }]),
-    MongooseModule.forFeature([{ name: 'AnalysisUserLog', schema: analysisUserLogSchema }]),
-    MongooseModule.forFeature([{ name: 'AnalysisEvent', schema: analysisEventSchema }]),
+    MongooseModule.forFeature([{ name: AnalysisUserName, schema: analysisUserSchema }]),
+    MongooseModule.forFeature([{ name: AnalysisUserLogName, schema: analysisUserLogSchema }]),
+    MongooseModule.forFeature([{ name: EventName, schema: analysisEventSchema }]),
     
   ],
   controllers: [AnalysisController],
