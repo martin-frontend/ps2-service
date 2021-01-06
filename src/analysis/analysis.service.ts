@@ -108,4 +108,34 @@ export class AnalysisService {
     newDau.save()
     return newDau;
   }
+  @Cron('* * * * * *')
+  async createWau() {
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+    // get sunday by subtraction current week day from month day
+    const lastWeekOfMonday = new Date(
+      todayDate.setDate(todayDate.getDate() - 6),
+    ).setHours(0, 0, 0, 0);
+    const lastWeekOfSunday = new Date(
+      todayDate.setDate(todayDate.getDate() - todayDate.getDay()),
+    ).setHours(23, 59, 59, 999);
+    // get monday by subtraction 6 days from sunday
+    //塞入wau資料表
+    const wauData = await this.analysisUserLogModel.aggregate([
+        { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
+        { $group: { _id: {userL'$userid',ymd: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }}, count: { $sum: 1 } } },
+        { $group: { _id: '$_id.ymd', dau: { $sum: 1 } } },
+      ]);    
+    console.log(wauData);
+
+    let wau = 0;
+    if (wauData && wauData.length > 0) wau = wauData[0].wau;
+    else throw new NotFoundException();
+    const newWau = new this.analysisUserWauModel({
+      wau: wau,
+      date: lastWeekOfMonday,
+    });
+    newWau.save();
+    return newWau;
+  }
 }
