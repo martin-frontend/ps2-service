@@ -8,9 +8,6 @@ import { Model } from 'mongoose';
 import { AnalysisUserModel } from 'src/analysis/analysisUser.model';
 import { AnalysisUserLogModel } from 'src/analysis/analysisUserLog.model';
 import { AnalysisEventModel } from './analysisEvent.model';
-import * as moment from 'moment'
-
-
 
 @Injectable()
 export class AnalysisService {
@@ -20,12 +17,14 @@ export class AnalysisService {
         @InjectModel('AnalysisEvent') private readonly analysisEventModel: Model<AnalysisEventModel>,
     ) {}
     async createUser(createAnalysisUserDTO:CreateAnalysisUserDTO) {
-        const {account} = createAnalysisUserDTO
+        const {account,accountName} = createAnalysisUserDTO
         const user = await this.analysisUserModel.findOne({
             account:account,
         })
         if(user){
-            const newLog = new this.analysisUserLogModel({userid:user.id});        
+            const newLog = new this.analysisUserLogModel({userid:user.id});  
+            user.accountName = accountName
+            await user.save()      
             const resLog = await newLog.save();
             if(!resLog)
                 throw new NotFoundException();
@@ -33,6 +32,29 @@ export class AnalysisService {
         }
         else{
             const newUser = new this.analysisUserModel(createAnalysisUserDTO);
+            const resUser = await newUser.save();
+            if(!resUser)
+                throw new NotFoundException();
+            return resUser;
+        }
+    }
+    async createUserWithDate(account:string,accountName:string,date:Date) {
+        const user = await this.analysisUserModel.findOne({
+            account:account,
+        })
+        if(user){
+            const newLog = new this.analysisUserLogModel({userid:user.id});
+            user.accountName = accountName
+            await user.save()
+            newLog.createdAt = date
+            const resLog = await newLog.save();
+            if(!resLog)
+                throw new NotFoundException();
+            return null;
+        }
+        else{
+            const newUser = new this.analysisUserModel({account:account,accountName:accountName});
+            newUser.createdAt = date
             const resUser = await newUser.save();
             if(!resUser)
                 throw new NotFoundException();

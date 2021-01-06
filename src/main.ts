@@ -1,6 +1,8 @@
+import { Test } from '@nestjs/testing';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
+import * as cron from 'node-cron'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,7 +26,16 @@ async function bootstrap() {
     // Pass to next layer of middleware
     next();
   });
-
+  //9:52
+  var task = cron.schedule('0 10 * * *', () =>  {
+    const test = require('./cronjob/test')
+    test.Test()
+  }, {
+    scheduled: true,
+    timezone: "Asia/Taipei"
+  });
+  
+  task.start();
   await app.listen(3000);
 }
 bootstrap();
