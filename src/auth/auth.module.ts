@@ -5,13 +5,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from 'src/user/user.model';
 import { AuthorityRolesSchema } from 'src/authority/authorityRoles.model';
 
-
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
-    MongooseModule.forFeature([{ name: 'AuthorityRoles', schema: AuthorityRolesSchema }]),
+    MongooseModule.forFeature([
+      { name: 'AuthorityRoles', schema: AuthorityRolesSchema },
+    ]),
   ],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService],
 })
 export class AuthModule {}

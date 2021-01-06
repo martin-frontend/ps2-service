@@ -1,15 +1,14 @@
-
-import {IsNotEmpty,IsString} from "class-validator"
+import { IsNotEmpty, IsString } from 'class-validator';
 export class UpdateRoleDTO {
-    @IsNotEmpty()
-    @IsString()
-    id: string;
+  @IsNotEmpty()
+  @IsString()
+  id: string;
 
-    @IsNotEmpty()
-    @IsString()
-    name:string;
+  @IsNotEmpty()
+  @IsString()
+  name: string;
 
-    @IsNotEmpty()
-    @IsString()
-    roles: string;
+  @IsNotEmpty()
+  @IsString()
+  roles: string;
 }

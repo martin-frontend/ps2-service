@@ -1,16 +1,15 @@
-
-import {IsDate, IsNotEmpty,IsString} from "class-validator"
+import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateOperationBanDTO {
-    @IsNotEmpty()
-    @IsString()
-    account: string;
-    
-    @IsNotEmpty()
-    @IsString()
-    bannedDate: String;
+  @IsNotEmpty()
+  @IsString()
+  account: string;
 
-    @IsNotEmpty()
-    @IsString()
-    releaseDate: String;
+  @IsNotEmpty()
+  @IsString()
+  bannedDate: string;
+
+  @IsNotEmpty()
+  @IsString()
+  releaseDate: string;
 }

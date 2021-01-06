@@ -1,7 +1,6 @@
-
-import {IsNotEmpty,IsString} from "class-validator"
+import { IsNotEmpty, IsString } from 'class-validator';
 export class DeleteRoleDTO {
-    @IsNotEmpty()
-    @IsString()
-    id: string;
+  @IsNotEmpty()
+  @IsString()
+  id: string;
 }

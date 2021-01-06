@@ -1,5 +1,5 @@
 import { MongooseModule } from '@nestjs/mongoose';
-import { BanName,operationBanSchema } from './operationBan.model';
+import { BanName, operationBanSchema } from './operationBan.model';
 import { Module } from '@nestjs/common';
 import { OperationController } from './operation.controller';
 import { OperationService } from './operation.service';
@@ -9,6 +9,6 @@ import { OperationService } from './operation.service';
     MongooseModule.forFeature([{ name: BanName, schema: operationBanSchema }]),
   ],
   controllers: [OperationController],
-  providers: [OperationService]
+  providers: [OperationService],
 })
 export class OperationModule {}
