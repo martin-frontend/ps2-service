@@ -8,4 +8,8 @@ export class UpdateOperationBanDTO {
     @IsNotEmpty()
     @IsString()
     releaseDate: string;
+
+    @IsNotEmpty()
+    @IsString()
+    releaseState: string;
 }

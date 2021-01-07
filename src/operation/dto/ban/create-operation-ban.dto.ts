@@ -5,12 +5,14 @@ export class CreateOperationBanDTO {
   @IsString()
   account: string;
   
-  @IsNotEmpty()
   @IsString()
   releaseDate: string;
 
   @IsString()
-  state: string;
+  releaseState: string;
+
+  @IsString()
+  whiteState: string;
 
   @IsString()
   reason: string;

@@ -19,12 +19,15 @@ export class OperationController {
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async createBan(@Body() createOperationBanDTO: CreateOperationBanDTO) {
-    const Ban = await this.operationService.createBan(createOperationBanDTO);
-    if (Ban) {
+    const BanArr = await this.operationService.createBan(createOperationBanDTO);
+    if (BanArr[0]) {
+      if(BanArr[1])
       return { success: true, content: null, msg: '新增成功' };
     } else {
-      return { success: false, content: null, msg: '新增失敗' };
+      if(BanArr[1])
+        return { success: false, content: BanArr[1], msg: '確認更新' };
     }
+    return { success: false, content: null, msg: '新增失敗' };
   }
   
   @Post('/updateban')
