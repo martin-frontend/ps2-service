@@ -4,7 +4,6 @@ import { OperationBanModel } from './operationBan.model';
 import { CreateOperationBanDTO } from './dto/ban/create-operation-ban.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
-import * as moment from 'moment';
 
 @Injectable()
 export class OperationService {
@@ -18,11 +17,9 @@ export class OperationService {
     const {account,releaseDate,state,reason} = createOperationBanDTO
     let accountArr = account.split(',')
     let res = null;
-    console.log(new Date(releaseDate))
     for (let i = 0; i < accountArr.length; i++) {
       let element = accountArr[i];
-      let date = new Date(releaseDate)
-      let newBan = new this.operationBanModel({account:element,releaseDate:date,state,reason});
+      let newBan = new this.operationBanModel({account:element,releaseDate,state,reason});
       res = await newBan.save();      
     }
     return res;
@@ -31,22 +28,19 @@ export class OperationService {
     const { id,releaseDate } = updateOperationBanDTO;
     const ban = await this.operationBanModel.findById(id).exec();
     if (!ban) throw new NotFoundException();
-    ban.releaseDate = new Date(releaseDate);
+    ban.releaseDate = Number(releaseDate);
     const res = ban.save();
     return res;
   }
   async getBans() {
-    const today = new Date();
+    const today = new Date().getDate();
     const Bans = await this.operationBanModel.find({
       releaseDate:{$gte:today}
     })
-    console.log(Bans)
     return Bans.map((ban) => ({
       id: ban.id,
       account:ban.account,
-      releaseDate:moment(new Date(ban.releaseDate)).format(
-        'YYYY/MM/DD hh:mm:ss',
-      ),
+      releaseDate:ban.releaseDate,
       reason:ban.reason
     }));
   }
