@@ -56,13 +56,19 @@ export class AnalysisController {
       return { success: false, content: null, msg: '查詢失敗' };
     }
   }
-//   @Post('/getUserMAU')
-//   @UseInterceptors(FileInterceptor('body'))
-//   @UsePipes(ValidationPipe)
-//   async getUserMAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
-//     const mau = await this.analysisService.getUserMAU(getAnalysisUserDTO);
-//     return mau;
-//   }
+  @Post('/getUserMAU')
+  @UseInterceptors(FileInterceptor('body'))
+  @UsePipes(ValidationPipe)
+  async getUserMAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
+    const mau = await this.analysisService.getUserMAU(getAnalysisUserDTO);
+    const newmau = mau.map((item) => [item["date"],item["mau"]])
+    if (newmau) {
+      return { success: true, content: newmau, msg: '查詢成功' };
+    } else {
+      return { success: false, content: null, msg: '查詢失敗' };
+    }
+
+  }
   @Post('/getusernru')
   @UseInterceptors(FileInterceptor('body'))
   async getUserNRU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {

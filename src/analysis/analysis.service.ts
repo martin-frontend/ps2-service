@@ -141,12 +141,20 @@ export class AnalysisService {
     }
     return wau;
   }
-  // async getUserMAU(getAnalysisUserDTO: GetAnalysisUserDTO) {
-  //   const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 0)
-  //   console.log(firstDayOfMonth);
-  //   const user = await this.logModeAggregate(firstDayOfMonth)
-  //   return user;
-  // }
+  async getUserMAU(getAnalysisUserDTO: GetAnalysisUserDTO) {
+    const { startDate, endDate } = getAnalysisUserDTO;
+    const _startDate = Number(startDate);
+    const _endDate = Number(endDate);
+    const firstDayOfMonth = moment(new Date(new Date().getFullYear(), new Date().getMonth())).valueOf()
+    const mau = await this.analysisUserMauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
+    if(_endDate >= firstDayOfMonth) { //需轉毫秒比較
+      const todayUser = await this.logModeAggregate(firstDayOfMonth)
+      todayUser[0]["date"] =  todayUser[0]["_id"]
+      todayUser[0]["mau"] =  todayUser[0]["dau"]
+      return todayUser.concat(...mau)
+    }
+    return mau;
+  }
   async getUserNRU(getAnalysisUserDTO: GetAnalysisUserDTO) {
     const { startDate, endDate } = getAnalysisUserDTO;
     const _startDate = new Date(startDate);
