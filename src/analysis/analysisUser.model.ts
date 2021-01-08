@@ -4,6 +4,8 @@ export const analysisUserSchema = new mongoose.Schema(
   {
     account: { type: String, required: true },
     accountName: { type: String, required: true },
+    createdAt: { type: Number },
+    updatedAt: { type: Number },
   },
   {
     versionKey: false,
