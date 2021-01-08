@@ -12,8 +12,5 @@ export class CreateOperationBanDTO {
   releaseState: string;
 
   @IsString()
-  whiteState: string;
-
-  @IsString()
   reason: string;
 }

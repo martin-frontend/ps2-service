@@ -12,4 +12,7 @@ export class UpdateOperationBanDTO {
     @IsNotEmpty()
     @IsString()
     releaseState: string;
+
+    @IsString()
+    reason: string;
 }

@@ -16,41 +16,54 @@ export class OperationService {
   
   async createBan(createOperationBanDTO: CreateOperationBanDTO) {
     //暫時這樣寫，之後要改
-    const {account,releaseDate,releaseState,whiteState,reason} = createOperationBanDTO
+    const {account,releaseDate,releaseState,reason} = createOperationBanDTO
     let accountArr = account.split(',')
     let res = null;
-    if(whiteState==='0'){
-      const now = moment().valueOf()
-      const Bans = await this.operationBanModel.find(
+    const now = moment().valueOf()
+    let remainArr = []
+    for (let i = 0; i < accountArr.length; i++) {
+      let element = accountArr[i];
+      let Ban = await this.operationBanModel.findOne(
         {
           $and:[
-            {account:account},
+            {account:element},
             {$or:[
               {releaseDate:{$gte:now}},
-              {releaseState:{$eq:'1'}}]
+              {releaseState:{$eq:'1'}}
+              ]
             }
           ]
         }
       )
-      if(Bans.length){
-        return [false,Bans];
+      if(Ban){
+        remainArr.push(Ban)
+      }
+      else{
+        let date = releaseDate?Number(releaseDate):0;
+        let newBan = new this.operationBanModel({account:element,releaseDate:date,releaseState,reason});
+        res = await newBan.save();
       }
     }
-    for (let i = 0; i < accountArr.length; i++) {
-      let element = accountArr[i];
-      let date = releaseDate?Number(releaseDate):0;
-      let newBan = new this.operationBanModel({account:element,releaseDate:date,releaseState,reason});
-      res = await newBan.save();      
+    if(res){
+      return {created:true,content:remainArr}
     }
-    return [true,res];
+    else{
+      return {created:false,content:remainArr}
+    }
   }
   async updateBan(updateOperationBanDTO: UpdateOperationBanDTO) {
-    const { id,releaseDate,releaseState } = updateOperationBanDTO;
-    const ban = await this.operationBanModel.findById(id).exec();
-    if (!ban) throw new NotFoundException();
-    ban.releaseDate = Number(releaseDate);
-    ban.releaseState = releaseState;
-    const res = ban.save();
+    const { id,releaseDate,releaseState,reason } = updateOperationBanDTO;
+    let idArr = id.split(',')
+    let res = null
+    for (let i = 0; i < idArr.length; i++) {
+      let ban = await this.operationBanModel.findById(id).exec();
+      if (!ban) throw new NotFoundException();
+      ban.releaseDate = Number(releaseDate);
+      ban.releaseState = releaseState;
+      if(reason)
+        ban.reason = reason;
+      res = ban.save();
+    }
     return res;
   }
   async getBans() {
