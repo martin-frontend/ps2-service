@@ -25,7 +25,7 @@ export class AuthController {
         const generatedjwt = await this.authService.createToken(user.id);
         //一小時過期
         res.cookie('AuthCookie', generatedjwt, {
-          maxAge: 3600 * 6000,
+          maxAge: 3600 * 60000,
           httpOnly: false,
         });
         res.send({
