@@ -49,12 +49,13 @@ export class AnalysisService {
       return resUser;
     }
   }
-  async createUserWithDate(account: string, accountName: string, date: Date) {
+  async createUserWithDate(account: string, accountName: string, date: number) {
+
     const user = await this.analysisUserModel.findOne({
       account: account,
     });
     if (user) {
-      const newLog = new this.analysisUserLogModel({ userid: user.id });
+      const newLog = new this.analysisUserLogModel({ userid: user.id,createdAt:date });
       user.accountName = accountName;
       await user.save();
       newLog.createdAt = date;
@@ -198,22 +199,18 @@ export class AnalysisService {
   async createWau() {
     const todayDate = new Date();
     todayDate.setHours(0, 0, 0, 0);
-    // get sunday by subtraction current week day from month day
     const lastWeekOfMonday = new Date(
       todayDate.setDate(todayDate.getDate() - 6),
     ).setHours(0, 0, 0, 0);
     const lastWeekOfSunday = new Date(
       todayDate.setDate(todayDate.getDate() - todayDate.getDay()),
     ).setHours(23, 59, 59, 999);
-    // get monday by subtraction 6 days from sunday
     //塞入wau資料表
     const wauData = await this.analysisUserLogModel.aggregate([
         { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
         { $group: { _id: {user:'$userid',ymd: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }}, count: { $sum: 1 } } },
         { $group: { _id: '$_id.ymd', dau: { $sum: 1 } } },
       ]);    
-    console.log(wauData);
-
     let wau = 0;
     if (wauData && wauData.length > 0) wau = wauData[0].wau;
     else throw new NotFoundException();
