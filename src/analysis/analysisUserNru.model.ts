@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
 
-export const analysisUserDauSchema = new mongoose.Schema(
+export const analysisUserNruSchema = new mongoose.Schema(
   {
-    dau: { type: String, required: true },
+    nru: { type: String, required: true },
     date: { type: Number, required: true },
     createdAt: { type: Number },
     updatedAt: { type: Number },
@@ -13,12 +13,12 @@ export const analysisUserDauSchema = new mongoose.Schema(
   },
 );
 
-export interface AnalysisUserDauModel extends mongoose.Document {
+export interface AnalysisUserNruModel extends mongoose.Document {
   id: string;
-  dau: string;
+  nru: string;
   date: number;
   createdAt: number;
   updatedAt: number;
 }
 
-export const AnalysisUserDauName = 'AnalysisUserDau';
+export const AnalysisUserNruName = 'AnalysisUserNru';
