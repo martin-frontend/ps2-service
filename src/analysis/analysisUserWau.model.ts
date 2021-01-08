@@ -4,6 +4,8 @@ export const analysisUserWauSchema = new mongoose.Schema(
   {
     wau: { type: String, required: true },
     date: { type: Number, required: true },
+    createdAt: { type: Number },
+    updatedAt: { type: Number },
   },
   {
     versionKey: false,

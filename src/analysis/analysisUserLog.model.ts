@@ -3,6 +3,8 @@ import * as mongoose from 'mongoose';
 export const analysisUserLogSchema = new mongoose.Schema(
   {
     userid: { type: String, required: true },
+    createdAt: { type: Number },
+    updatedAt: { type: Number },
   },
   {
     versionKey: false,
@@ -13,8 +15,8 @@ export const analysisUserLogSchema = new mongoose.Schema(
 export interface AnalysisUserLogModel extends mongoose.Document {
   id: string;
   userid: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Number;
+  updatedAt: Number;
 }
 
 export const AnalysisUserLogName = 'AnalysisUserLog';

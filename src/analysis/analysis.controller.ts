@@ -49,21 +49,20 @@ export class AnalysisController {
   @UseInterceptors(FileInterceptor('body'))
   async getUserWAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const wau = await this.analysisService.getUserWAU(getAnalysisUserDTO);
-    const newwau = wau.map((item) => [item["date"],item["wau"]])
-    if (newwau) {
-      return { success: true, content: newwau, msg: '查詢成功' };
+    const newWau = wau.map((item) => [item["date"],item["wau"]])
+    if (newWau) {
+      return { success: true, content: newWau, msg: '查詢成功' };
     } else {
       return { success: false, content: null, msg: '查詢失敗' };
     }
   }
-  @Post('/getUserMAU')
+  @Post('/getusermau')
   @UseInterceptors(FileInterceptor('body'))
-  @UsePipes(ValidationPipe)
   async getUserMAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const mau = await this.analysisService.getUserMAU(getAnalysisUserDTO);
-    const newmau = mau.map((item) => [item["date"],item["mau"]])
-    if (newmau) {
-      return { success: true, content: newmau, msg: '查詢成功' };
+    const newMau = mau.map((item) => [item["date"],item["mau"]])
+    if (newMau) {
+      return { success: true, content: newMau, msg: '查詢成功' };
     } else {
       return { success: false, content: null, msg: '查詢失敗' };
     }

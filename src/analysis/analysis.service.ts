@@ -49,12 +49,13 @@ export class AnalysisService {
       return resUser;
     }
   }
-  async createUserWithDate(account: string, accountName: string, date: Date) {
+  async createUserWithDate(account: string, accountName: string, date: number) {
+
     const user = await this.analysisUserModel.findOne({
       account: account,
     });
     if (user) {
-      const newLog = new this.analysisUserLogModel({ userid: user.id });
+      const newLog = new this.analysisUserLogModel({ userid: user.id,createdAt:date });
       user.accountName = accountName;
       await user.save();
       newLog.createdAt = date;
@@ -116,13 +117,18 @@ export class AnalysisService {
     const { startDate, endDate } = getAnalysisUserDTO;
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
-    const _todayDate = moment().startOf('day').valueOf();
-    // _todayDate.setHours(0,0,0,0);
+    const todayDate = moment().startOf('day').valueOf();
     const user = await this.analysisUserDauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
-    if(_endDate >= _todayDate) { //需轉毫秒比較
-      const todayUser = await this.logModeAggregate(_todayDate)
-      todayUser[0]["date"] =  todayUser[0]["_id"]
-      console.log(todayUser)
+    if(_endDate >= todayDate) {
+      const todayUser = await this.logModeAggregate(todayDate)
+      if(todayUser.length > 0) {
+        todayUser[0]["date"] =  todayUser[0]["_id"]
+      } else {
+        todayUser[0] = {
+          "date": todayDate,
+          "dau": "0"
+        }
+      }
       return todayUser.concat(...user)
     }
     return user;
@@ -131,41 +137,57 @@ export class AnalysisService {
     const { startDate, endDate } = getAnalysisUserDTO;
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
-    const day = new Date().getDay() || 7; // Sunday - Saturday : 0 - 6
-    const firstDayOfWeek = moment(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1 - day)).valueOf()
-    const wau = await this.analysisUserWauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
-    if(_endDate >= firstDayOfWeek) { //需轉毫秒比較
+    const firstDayOfWeek = moment().startOf('week').add(1,'d').valueOf()
+    const user = await this.analysisUserWauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
+    if(_endDate >= firstDayOfWeek) {
       const thisWeekUser = await this.logModeAggregate(firstDayOfWeek)
-      thisWeekUser[0]["date"] =  thisWeekUser[0]["_id"]
-      thisWeekUser[0]["wau"] =  thisWeekUser[0]["dau"]
-      return thisWeekUser.concat(...wau)
+      if(thisWeekUser.length > 0) {
+        thisWeekUser[0]["date"] =  thisWeekUser[0]["_id"]
+        thisWeekUser[0]["wau"] =  thisWeekUser[0]["dau"]
+      } else {
+        thisWeekUser[0] = {
+          "date": firstDayOfWeek,
+          "wau": "0"
+        }
+      }
+      return thisWeekUser.concat(...user)
     }
-    return wau;
+    return user;
   }
   async getUserMAU(getAnalysisUserDTO: GetAnalysisUserDTO) {
     const { startDate, endDate } = getAnalysisUserDTO;
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
-    const firstDayOfMonth = moment(new Date(new Date().getFullYear(), new Date().getMonth())).valueOf()
-    const mau = await this.analysisUserMauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
-    if(_endDate >= firstDayOfMonth) { //需轉毫秒比較
+    const firstDayOfMonth = moment().startOf('month').valueOf()
+    const user = await this.analysisUserMauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
+    if(_endDate >= firstDayOfMonth) {
       const thisMonthUser = await this.logModeAggregate(firstDayOfMonth)
-      thisMonthUser[0]["date"] =  thisMonthUser[0]["_id"]
-      thisMonthUser[0]["mau"] =  thisMonthUser[0]["dau"]
-      return thisMonthUser.concat(...mau)
+      if(thisMonthUser.length > 0) {
+        thisMonthUser[0]["date"] =  thisMonthUser[0]["_id"]
+        thisMonthUser[0]["mau"] =  thisMonthUser[0]["dau"]
+      } else {
+        thisMonthUser[0] = {
+          "date": firstDayOfMonth,
+          "mau": "0"
+        }
+      }
+      return thisMonthUser.concat(...user)
     }
-    return mau;
+    return user;
   }
   async getUserNRU(getAnalysisUserDTO: GetAnalysisUserDTO) {
-    const { startDate, endDate } = getAnalysisUserDTO;
-    const _startDate = new Date(startDate);
-    const _endDate = new Date(endDate);
-    const _todayDate = new Date();
-    _todayDate.setHours(0,0,0,0);
-    const user = await this.analysisUserModel.aggregate([
-        {$match:{createdAt:{$gte:_todayDate}}},
-        {$group:{_id:"ymd",dau:{"$sum":1}}}])
-    return user;
+    // const { startDate, endDate } = getAnalysisUserDTO;
+    // const _startDate = new Date(startDate);
+    // const _endDate = new Date(endDate);
+    // const _todayDate = new Date();
+    // _todayDate.setHours(0,0,0,0);
+    // const user = await this.analysisUserDauModel.find({"date" : { $gt: _startDate, $lt: _endDate }})
+    // if(_endDate.getTime() > _todayDate.getTime()) { //需轉毫秒比較
+    //   const todayUser = await this.logModeAggregate(_todayDate)
+    //   todayUser[0]["date"] =  todayUser[0]["_id"]
+    //   return todayUser.concat(...user)
+    // }
+    // return user;
   }
 
   async createEvent(createAnalysisEventDTO: CreateAnalysisEventDTO) {
@@ -195,4 +217,80 @@ export class AnalysisService {
     newDau.save()
     return newDau;
   }
+
+  // @Cron('* * * * * *')
+  async createWau() {
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+    const lastWeekOfMonday = new Date(
+      todayDate.setDate(todayDate.getDate() - 6),
+    ).setHours(0, 0, 0, 0);
+    const lastWeekOfSunday = new Date(
+      todayDate.setDate(todayDate.getDate() - todayDate.getDay()),
+    ).setHours(23, 59, 59, 999);
+    //塞入wau資料表
+    const wauData = await this.analysisUserLogModel.aggregate([
+        { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
+        { $group: { _id: {user:'$userid',ymd: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }}, count: { $sum: 1 } } },
+        { $group: { _id: '$_id.ymd', dau: { $sum: 1 } } },
+      ]);    
+    let wau = 0;
+    if (wauData && wauData.length > 0) wau = wauData[0].wau;
+    else throw new NotFoundException();
+    const newWau = new this.analysisUserWauModel({
+      wau: wau,
+      date: lastWeekOfMonday,
+    });
+    newWau.save();
+    return newWau;
+  }
+
+  // @Cron('* * * * * *')
+  async createMau() {          
+      const lastWeekOfMonday = moment().add(-1,'M').startOf('days')   
+      const lastWeekOfSunday = moment().startOf('month').add(-1,'d').endOf('days')
+      
+      //塞入mau資料表
+      const mauData = await this.analysisUserLogModel.aggregate([
+          { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
+          { $group: { _id: { user:'$userid',date: '$createdAt'}, count: { $sum: 1 } } },
+          { $group: { _id :'date', mau: { $sum: 1 } } },
+        ]);    
+      let mau = {};
+      if (mauData && mauData.length > 0) mau = mauData[0].mau;
+      else throw new NotFoundException();
+      const newMau = new this.analysisUserMauModel({
+        mau: mau,
+        date: lastWeekOfMonday,
+      });    
+      newMau.save();
+      return newMau;
+    }  
+    
+  // @Cron('* * * * * *')
+  async createLastYearWau() {
+      const count = 52
+      const wauArray = [];
+      for (let index = 0; index <= count; index++) {
+         const lastWeekOfMonday = moment().add(-1-index, 'w').startOf('week').add(1,'days').valueOf()
+        const lastWeekOfSunday = moment().add(0-index,'w').startOf('week').endOf('days').valueOf()
+  
+        // 塞入wau資料表
+        const wauData = await this.analysisUserLogModel.aggregate([
+          { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
+          { $group: { _id: { user:'$userid', date: '$createdAt' }, count: { $sum: 1 } } },
+          { $group: { _id: 'date', wau: { $sum: 1 } } },
+        ]);    
+        
+        if (wauData && wauData.length > 0) wauArray.push({wau:wauData[0].wau,date:lastWeekOfMonday});
+        else throw new NotFoundException()          
+      }
+        wauArray.forEach(element => {
+          const newWau = new this.analysisUserWauModel({
+            wau: element.wau,
+            date: element.date,
+          });        
+          newWau.save();
+        });
+    }
 }
