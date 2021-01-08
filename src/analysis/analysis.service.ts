@@ -134,10 +134,10 @@ export class AnalysisService {
     const firstDayOfWeek = moment(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1 - day)).valueOf()
     const wau = await this.analysisUserWauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
     if(_endDate >= firstDayOfWeek) { //需轉毫秒比較
-      const todayUser = await this.logModeAggregate(firstDayOfWeek)
-      todayUser[0]["date"] =  todayUser[0]["_id"]
-      todayUser[0]["wau"] =  todayUser[0]["dau"]
-      return todayUser.concat(...wau)
+      const thisWeekUser = await this.logModeAggregate(firstDayOfWeek)
+      thisWeekUser[0]["date"] =  thisWeekUser[0]["_id"]
+      thisWeekUser[0]["wau"] =  thisWeekUser[0]["dau"]
+      return thisWeekUser.concat(...wau)
     }
     return wau;
   }
@@ -148,10 +148,10 @@ export class AnalysisService {
     const firstDayOfMonth = moment(new Date(new Date().getFullYear(), new Date().getMonth())).valueOf()
     const mau = await this.analysisUserMauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
     if(_endDate >= firstDayOfMonth) { //需轉毫秒比較
-      const todayUser = await this.logModeAggregate(firstDayOfMonth)
-      todayUser[0]["date"] =  todayUser[0]["_id"]
-      todayUser[0]["mau"] =  todayUser[0]["dau"]
-      return todayUser.concat(...mau)
+      const thisMonthUser = await this.logModeAggregate(firstDayOfMonth)
+      thisMonthUser[0]["date"] =  thisMonthUser[0]["_id"]
+      thisMonthUser[0]["mau"] =  thisMonthUser[0]["dau"]
+      return thisMonthUser.concat(...mau)
     }
     return mau;
   }
