@@ -120,7 +120,7 @@ export class AnalysisService {
     const todayDate = moment().startOf('day').valueOf();
     const user = await this.analysisUserDauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
     if(_endDate >= todayDate) {
-      let todayUser = await this.logModeAggregate(todayDate)
+      const todayUser = await this.logModeAggregate(todayDate)
       if(todayUser.length > 0) {
         todayUser[0]["date"] =  todayUser[0]["_id"]
       } else {
@@ -140,7 +140,7 @@ export class AnalysisService {
     const firstDayOfWeek = moment().startOf('week').add(1,'d').valueOf()
     const user = await this.analysisUserWauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
     if(_endDate >= firstDayOfWeek) {
-      let thisWeekUser = await this.logModeAggregate(firstDayOfWeek)
+      const thisWeekUser = await this.logModeAggregate(firstDayOfWeek)
       if(thisWeekUser.length > 0) {
         thisWeekUser[0]["date"] =  thisWeekUser[0]["_id"]
         thisWeekUser[0]["wau"] =  thisWeekUser[0]["dau"]
@@ -161,7 +161,7 @@ export class AnalysisService {
     const firstDayOfMonth = moment().startOf('month').valueOf()
     const user = await this.analysisUserMauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
     if(_endDate >= firstDayOfMonth) {
-      let thisMonthUser = await this.logModeAggregate(firstDayOfMonth)
+      const thisMonthUser = await this.logModeAggregate(firstDayOfMonth)
       if(thisMonthUser.length > 0) {
         thisMonthUser[0]["date"] =  thisMonthUser[0]["_id"]
         thisMonthUser[0]["mau"] =  thisMonthUser[0]["dau"]
@@ -181,9 +181,12 @@ export class AnalysisService {
     const _endDate = new Date(endDate);
     const _todayDate = new Date();
     _todayDate.setHours(0,0,0,0);
-    const user = await this.analysisUserModel.aggregate([
-        {$match:{createdAt:{$gte:_todayDate}}},
-        {$group:{_id:"ymd",dau:{"$sum":1}}}])
+    const user = await this.analysisUserDauModel.find({"date" : { $gt: _startDate, $lt: _endDate }})
+    if(_endDate.getTime() > _todayDate.getTime()) { //需轉毫秒比較
+      const todayUser = await this.logModeAggregate(_todayDate)
+      todayUser[0]["date"] =  todayUser[0]["_id"]
+      return todayUser.concat(...user)
+    }
     return user;
   }
 
