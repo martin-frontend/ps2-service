@@ -88,7 +88,7 @@ export class AnalysisService {
     ]);
     return user;
   }
-  logModeAggregate (startDate) {
+  async logModeAggregate (startDate) {
     return this.analysisUserLogModel.aggregate([
       {
         $match: {
@@ -122,6 +122,7 @@ export class AnalysisService {
     if(_endDate >= _todayDate) { //需轉毫秒比較
       const todayUser = await this.logModeAggregate(_todayDate)
       todayUser[0]["date"] =  todayUser[0]["_id"]
+      console.log(todayUser)
       return todayUser.concat(...user)
     }
     return user;

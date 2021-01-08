@@ -17,12 +17,12 @@ export const operationBanSchema = new mongoose.Schema(
 
 export interface OperationBanModel extends mongoose.Document {
   id: string;
-  account:string;
-  releaseDate: Number;
-  releaseState:string;//0:一般，1:永久停權
-  reason:string;
-  createdAt: Number;
-  updatedAt: Number;
+  account: string;
+  releaseDate: number;
+  releaseState: string;//0:一般，1:永久停權
+  reason: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export const BanName = 'OperationBan';
