@@ -72,7 +72,12 @@ export class AnalysisController {
   @UseInterceptors(FileInterceptor('body'))
   async getUserNRU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const nru = await this.analysisService.getUserNRU(getAnalysisUserDTO);
-    return nru;
+    const newNru = nru.map((item) => [item["date"],item["nru"]])
+    if (newNru) {
+      return { success: true, content: newNru, msg: '查詢成功' };
+    } else {
+      return { success: false, content: null, msg: '查詢失敗' };
+    }
   }
   @Post('/event')
   @UseInterceptors(FileInterceptor('body'))
