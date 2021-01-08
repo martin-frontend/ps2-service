@@ -244,4 +244,31 @@ export class AnalysisService {
       newMau.save();
       return newMau;
     }  
+    
+  // @Cron('* * * * * *')
+  async createLastYearWau() {
+      const count = 52
+      const wauArray = [];
+      for (let index = 0; index <= count; index++) {
+         const lastWeekOfMonday = moment().add(-1-index, 'w').startOf('week').add(1,'days').valueOf()
+        const lastWeekOfSunday = moment().add(0-index,'w').startOf('week').endOf('days').valueOf()
+  
+        // 塞入wau資料表
+        const wauData = await this.analysisUserLogModel.aggregate([
+          { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
+          { $group: { _id: { user:'$userid', date: '$createdAt' }, count: { $sum: 1 } } },
+          { $group: { _id: 'date', wau: { $sum: 1 } } },
+        ]);    
+        
+        if (wauData && wauData.length > 0) wauArray.push({wau:wauData[0].wau,date:lastWeekOfMonday});
+        else throw new NotFoundException()          
+      }
+        wauArray.forEach(element => {
+          const newWau = new this.analysisUserWauModel({
+            wau: element.wau,
+            date: element.date,
+          });        
+          newWau.save();
+        });
+    }
 }
