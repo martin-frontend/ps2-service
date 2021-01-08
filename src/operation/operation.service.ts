@@ -39,7 +39,7 @@ export class OperationService {
         remainArr.push(Ban)
       }
       else{
-        let date = releaseDate?Number(releaseDate):0;
+        let date = releaseDate?Number(releaseDate):9999999999999.0;
         let newBan = new this.operationBanModel({account:element,releaseDate:date,releaseState,reason});
         res = await newBan.save();
       }
@@ -68,7 +68,7 @@ export class OperationService {
   }
   async getBans() {
     const now = moment().valueOf()
-    const Bans = await this.operationBanModel.find({})
+    const Bans = await this.operationBanModel.find({}).sort({'releaseDate':1})
     return Bans.map((ban) => ({
       id: ban.id,
       account:ban.account,
