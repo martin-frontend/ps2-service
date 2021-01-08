@@ -28,7 +28,7 @@ export class AuthService {
   }
   async createToken(id: string) {
     //token到期時間
-    const expiresTime = 3600 * 6000;
+    const expiresTime = 3600 * 60000;
     //重要，盡可能複雜些
     const secret = process.env.JWT_SECRET;
     const jwtobj = jwt.sign({ id: id }, secret, { expiresIn: expiresTime });

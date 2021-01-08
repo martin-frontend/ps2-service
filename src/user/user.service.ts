@@ -101,9 +101,6 @@ export class UserService {
   }
   async findUser(data: any): Promise<User> {
     const user = await this.userModel.findOne(data).exec();
-    if (!user) {
-      throw new NotFoundException();
-    }
     return user;
   }
 }

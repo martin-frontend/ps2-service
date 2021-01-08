@@ -92,7 +92,7 @@ export class AnalysisService {
     ]);
     return user;
   }
-  logModeAggregate (startDate) {
+  async logModeAggregate (startDate) {
     return this.analysisUserLogModel.aggregate([
       {
         $match: {
