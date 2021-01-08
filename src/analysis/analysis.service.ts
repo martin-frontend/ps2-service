@@ -195,6 +195,7 @@ export class AnalysisService {
     newDau.save()
     return newDau;
   }
+
   @Cron('* * * * * *')
   async createWau() {
     const todayDate = new Date();
@@ -221,4 +222,26 @@ export class AnalysisService {
     newWau.save();
     return newWau;
   }
+
+  // @Cron('* * * * * *')
+  async createMau() {          
+      const lastWeekOfMonday = moment().add(-1,'M').startOf('days')   
+      const lastWeekOfSunday = moment().startOf('month').add(-1,'d').endOf('days')
+      
+      //塞入mau資料表
+      const mauData = await this.analysisUserLogModel.aggregate([
+          { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
+          { $group: { _id: { user:'$userid',date: '$createdAt'}, count: { $sum: 1 } } },
+          { $group: { _id :'date', mau: { $sum: 1 } } },
+        ]);    
+      let mau = {};
+      if (mauData && mauData.length > 0) mau = mauData[0].mau;
+      else throw new NotFoundException();
+      const newMau = new this.analysisUserMauModel({
+        mau: mau,
+        date: lastWeekOfMonday,
+      });    
+      newMau.save();
+      return newMau;
+    }  
 }
