@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose';
 export const analysisUserWauSchema = new mongoose.Schema(
   {
     wau: { type: String, required: true },
-    date: { type: Date, required: true },
+    date: { type: Number, required: true },
   },
   {
     versionKey: false,
@@ -14,9 +14,9 @@ export const analysisUserWauSchema = new mongoose.Schema(
 export interface AnalysisUserWauModel extends mongoose.Document {
   id: string;
   wau: string;
-  date: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  date: number;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export const AnalysisUserWauName = 'AnalysisUserWau';

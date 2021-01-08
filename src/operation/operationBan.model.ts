@@ -3,8 +3,11 @@ import * as mongoose from 'mongoose';
 export const operationBanSchema = new mongoose.Schema(
   {
     account: { type: String, required: true },
-    bannedDate: { type: String, required: true },
-    releaseDate: { type: String, required: true },
+    releaseDate: { type: Number, required: true },
+    releaseState: { type: String, required: false, default: '0' },
+    reason: { type: String, required: false},
+    createdAt: { type: Number },
+    updatedAt: { type: Number },
   },
   {
     versionKey: false,
@@ -14,10 +17,12 @@ export const operationBanSchema = new mongoose.Schema(
 
 export interface OperationBanModel extends mongoose.Document {
   id: string;
-  bannedDate: string;
-  releaseDate: string;
-  createdAt: Date;
-  updatedAt: Date;
+  account:string;
+  releaseDate: Number;
+  releaseState:string;//0:一般，1:永久停權
+  reason:string;
+  createdAt: Number;
+  updatedAt: Number;
 }
 
 export const BanName = 'OperationBan';
