@@ -83,7 +83,7 @@ export class UserController {
   @Get('/getinfo')
   async getinfo(@Request() req) {
     const validateUser: any = await this.authService.validateUser(
-      req.cookies.AuthCookie,
+      req.query.token,
     );
     if (validateUser !== null) {
       const user = await this.authService.findUserById(validateUser.id);

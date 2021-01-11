@@ -20,17 +20,17 @@ export class AuthController {
   async login(@Body() loginDTO: LoginDTO, @Response() res) {
     const user = await this.authService.login(loginDTO);
 
-    if (user) {
+    if (user) {      
       if (user.status === '1') {
         const generatedjwt = await this.authService.createToken(user.id);
         //一小時過期
-        res.cookie('AuthCookie', generatedjwt, {
-          maxAge: 3600 * 60000,
-          httpOnly: false,
-        });
+        // res.cookie('AuthCookie', generatedjwt, {
+        //   maxAge: 3600 * 60000,
+        //   httpOnly: false,
+        // });
         res.send({
           success: true,
-          content: { islogin: true },
+          content: { islogin: true,token:generatedjwt },
           msg: '登入成功',
         });
       } else {
