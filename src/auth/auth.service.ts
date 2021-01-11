@@ -4,14 +4,14 @@ import * as jwt from 'jsonwebtoken';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AuthorityRoles } from 'src/authority/authorityRoles.model';
-import { User } from 'src/user/user.model';
+import { AuthorityRoles,RolesName } from 'src/authority/authorityRoles.model';
+import { User,UserName } from 'src/user/user.model';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel('User') private readonly userModel: Model<User>,
-    @InjectModel('AuthorityRoles')
+    @InjectModel(UserName) private readonly userModel: Model<User>,
+    @InjectModel(RolesName)
     private readonly authorityRolesModel: Model<AuthorityRoles>,
   ) {}
   async login(loginDTO: LoginDTO): Promise<User> {
