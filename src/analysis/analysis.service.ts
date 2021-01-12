@@ -94,6 +94,10 @@ export class AnalysisService {
       return user;
     }
   }
+  async getUserLog(id:string){
+    const user = await this.analysisUserLogModel.find({userid:id})
+    return user
+  }
   async getDauForToday() {
     const _todayDate = new Date();
     _todayDate.setHours(0, 0, 0, 0);

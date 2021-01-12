@@ -9,7 +9,6 @@ import {
   ValidationPipe,
   UseInterceptors,
   Body,
-  Get,
 } from '@nestjs/common';
 import { AnalysisService } from 'src/analysis/analysis.service';
 
@@ -34,6 +33,17 @@ export class AnalysisController {
     const user = await this.analysisService.getUser(getAnalysisUserDTO)
     if (user) {
       return { success: true, content: user, msg: '查詢成功' };
+    } else {
+      return { success: true, content: null, msg: '查詢成功' };
+    }
+  }
+  @Post('/getuserlog')
+  @UseInterceptors(FileInterceptor('body'))
+  @UsePipes(ValidationPipe)
+  async getUserLog(@Body() body) {
+    const userlog = await this.analysisService.getUserLog(body.id)
+    if (userlog) {
+      return { success: true, content: userlog, msg: '查詢成功' };
     } else {
       return { success: true, content: null, msg: '查詢成功' };
     }
