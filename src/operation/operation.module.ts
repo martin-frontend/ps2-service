@@ -1,3 +1,4 @@
+import { CategoryName, operationCategorySchema } from './operationCategory.model';
 import { AuthorityRolesSchema } from 'src/authority/authorityRoles.model';
 import { RolesName } from './../authority/authorityRoles.model';
 import { AnnounceName, operationAnnounceSchema } from './operationAnnounce.model';
@@ -17,6 +18,7 @@ import { UserName, UserSchema } from 'src/user/user.model';
     ]),
     MongooseModule.forFeature([{ name: AnnounceName, schema: operationAnnounceSchema }]),
     MongooseModule.forFeature([{ name: BanName, schema: operationBanSchema }]),
+    MongooseModule.forFeature([{ name: CategoryName, schema: operationCategorySchema }]),
   ],
   controllers: [OperationController],
   providers: [OperationService,AuthService],
