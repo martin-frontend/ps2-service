@@ -53,28 +53,22 @@ export class AnalysisService {
     }
   }
   async createUserWithDate(account: string, accountName: string, date: number) {
-
-    const user = await this.analysisUserModel.findOne({
+    let user = await this.analysisUserModel.findOne({
       account: account,
     });
-    if (user) {
-      const newLog = new this.analysisUserLogModel({ userid: user.id,createdAt:date });
-      user.accountName = accountName;
-      await user.save();
-      newLog.createdAt = date;
-      const resLog = await newLog.save();
-      if (!resLog) throw new NotFoundException();
-      return null;
-    } else {
-      const newUser = new this.analysisUserModel({
+    if (!user) {      
+      user = new this.analysisUserModel({
         account: account,
         accountName: accountName,
       });
-      newUser.createdAt = date;
-      const resUser = await newUser.save();
-      if (!resUser) throw new NotFoundException();
-      return resUser;
+      user.createdAt = date;
+      await user.save();
     }
+    const newLog = new this.analysisUserLogModel({ userid: user.id,createdAt:date });
+    user.accountName = accountName;
+    await user.save();
+    newLog.createdAt = date;
+    await newLog.save();
   }
   async getDauForToday() {
     const _todayDate = new Date();
@@ -205,15 +199,15 @@ export class AnalysisService {
   }
   async getUserNRU(getAnalysisUserDTO: GetAnalysisUserDTO) {
     const { startDate, endDate } = getAnalysisUserDTO;
+    console.log(startDate);
+    
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
     const todayDate = moment().startOf('day').valueOf();
     const user = await this.analysisUserNruModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
-    console.log(_endDate);
     
     if(_endDate >= todayDate) {
       const todayUser = await this.userAggregate(todayDate)
-      console.log(todayUser);
       
       if(todayUser.length > 0) {
         todayUser[0]["date"] =  todayUser[0]["_id"]
@@ -224,7 +218,6 @@ export class AnalysisService {
           "nru": "0"
         }
       }
-      console.log(todayUser);
       
       return todayUser.concat(...user)
     }
@@ -237,7 +230,7 @@ export class AnalysisService {
     return res;
   }
   // @Cron('0 5 0 * * 1-7')
-  // @Cron('* * * * * *')
+  @Cron('00 00 00 * * *')
   async createDau() {
     const todayDate = new Date();
     todayDate.setHours(0, 0, 0, 0);
@@ -245,8 +238,7 @@ export class AnalysisService {
     const endOfDay= moment().add(-1, 'd').endOf('day').valueOf()      
     const dauData = await this.analysisUserLogModel.aggregate([
       { $match: { createdAt: { $gte: startOfDay,$lte:endOfDay } } },
-      { $group: { _id: '$userid', count: { $sum: 1 } } },
-      { $group: { _id: 'ymd', dau: { $sum: 1 } } },
+      { $group: { _id: startOfDay, dau: { $sum: 1 } } },    
     ]);
     let dau = 0;
     if(dauData && dauData.length>0)
@@ -258,16 +250,15 @@ export class AnalysisService {
     return newDau;
   }
 
-  // @Cron('* * * * * *')
+  @Cron('00 00 00 * * *')
   async createWau() {   
     const lastWeekOfMonday = moment().add(-1, 'w').startOf('day').valueOf()
     const lastWeekOfSunday =moment().add(-1, 'w').endOf('day').valueOf()
 
     //塞入wau資料表
     const wauData = await this.analysisUserLogModel.aggregate([
-        { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
-        { $group: { _id: {user:'$userid',ymd: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }}, count: { $sum: 1 } } },
-        { $group: { _id: '$_id.ymd', wau: { $sum: 1 } } },
+      { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
+      { $group: { _id: lastWeekOfMonday, wau: { $sum: 1 } } },
       ]);    
     let wau = 0;
     if (wauData && wauData.length > 0) wau = wauData[0].wau;
@@ -280,16 +271,15 @@ export class AnalysisService {
     return newWau;
   }
 
-  // @Cron('* * * * * *')
+  @Cron('00 00 00 * * *')
   async createMau() {          
       const firstOfMonth = moment().add(-1,'M').startOf('month').valueOf()
       const endOfMonth = moment().add(-1,'M').endOf('month').valueOf()
       
       //塞入mau資料表
       const mauData = await this.analysisUserLogModel.aggregate([
-          { $match: { createdAt: { $gte: firstOfMonth,$lte:endOfMonth } } },
-          { $group: { _id: { user:'$userid',date: '$createdAt'}, count: { $sum: 1 } } },
-          { $group: { _id :'date', mau: { $sum: 1 } } },
+        { $match: { createdAt: { $gte: firstOfMonth,$lte:endOfMonth } } },
+        { $group: { _id: firstOfMonth, mau: { $sum: 1 } } },
         ]);    
 
       let mau = {};
@@ -303,16 +293,15 @@ export class AnalysisService {
       return newMau;
     }  
     
-    @Cron('55 03 14 * * *')
+    @Cron('00 00 00 * * *')
   async createNru() {          
     const startOfDay = moment().add(-1,'d').startOf('days').valueOf() 
     const lastOfDay = moment().add(-1,'d').endOf('days').valueOf() 
     
     //塞入nru資料表
     const nruData = await this.analysisUserModel.aggregate([
-        { $match: { createdAt: { $gte: startOfDay,$lte:lastOfDay } } },
-        { $group: { _id: { user:'$userid',date: '$createdAt'}, count: { $sum: 1 } } },
-        { $group: { _id :'date', nru: { $sum: 1 } } },
+      { $match: { createdAt: { $gte: startOfDay,$lte:lastOfDay } } },
+      { $group: { _id: startOfDay, nru: { $sum: 1 } } },
       ]);    
 
     let nru = {};
@@ -325,116 +314,15 @@ export class AnalysisService {
     newNru.save();
     return newNru;
   } 
-
-  // @Cron('* * * * * *')
-  async createLastYearDau() {
-      const count = 372
-      const dauArray = [];
-      for (let index = 0; index <= count; index++) {
-         const startOfDay = moment().add(-373+index, 'd').startOf('day').valueOf()
-        const lastOfDay = moment().add(-373+index, 'd').endOf('day').valueOf()        
-        console.log(startOfDay);
-        // // 塞入dau資料表
-        const dauData = await this.analysisUserLogModel.aggregate([
-          { $match: { createdAt: { $gte: startOfDay,$lte:lastOfDay } } },
-          { $group: { _id: { user:'$userid', date: '$createdAt' }, count: { $sum: 1 } } },
-          { $group: { _id: 'date', dau: { $sum: 1 } } },
-        ]);    
-        
-        if (dauData && dauData.length > 0) dauArray.push({dau:dauData[0].dau,date:startOfDay});
-        else dauArray.push({dau:0,date:startOfDay})          
-      }
-      dauArray.forEach(element => {
-          const newDau = new this.analysisUserDauModel({
-            dau: element.dau,
-            date: element.date,
-          });        
-          newDau.save();
-        });
-    }
-
-    // @Cron('* * * * * *')
-  async createLastYearWau() {
-      const count = 52
-      const wauArray = [];
-      for (let index = 0; index <= count; index++) {
-         const lastWeekOfMonday = moment().add(-53+index, 'w').startOf('day').valueOf()
-        const lastWeekOfSunday = moment().add(-53+index, 'w').endOf('day').valueOf()
-  
-        // 塞入wau資料表
-        const wauData = await this.analysisUserLogModel.aggregate([
-          { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
-          { $group: { _id: { user:'$userid', date: '$createdAt' }, count: { $sum: 1 } } },
-          { $group: { _id: 'date', wau: { $sum: 1 } } },
-        ]);    
-        
-        if (wauData && wauData.length > 0) wauArray.push({wau:wauData[0].wau,date:lastWeekOfMonday});
-        else wauArray.push({wau:0,date:lastWeekOfMonday})         
-      }
-        wauArray.forEach(element => {
-          const newWau = new this.analysisUserWauModel({
-            wau: element.wau,
-            date: element.date,
-          });        
-          newWau.save();
-        });
-    }
+  async createNruWithArray(nruArray:any) {
+    console.log(nruArray);
     
-    // @Cron('* * * * * *')
-    async createLastYearMau() {
-      const count = 11
-      const mauArray = [];
-      for (let index = 0; index <= count; index++) {
-        const startOfMonth = moment().add(-12+index,'M').startOf('month').valueOf()
-        const lastOfMonth = moment().add(-12+index,'M').endOf('month').valueOf()
-        
-        // 塞入mau資料表
-        const mauData = await this.analysisUserLogModel.aggregate([
-          { $match: { createdAt: { $gte: startOfMonth,$lte:lastOfMonth } } },
-          { $group: { _id: { user:'$userid', date: '$createdAt' }, count: { $sum: 1 } } },
-          { $group: { _id: startOfMonth, mau: { $sum: 1 } } },
-        ]);    
-        
-        if (mauData && mauData.length > 0) mauArray.push({mau:mauData[0].mau,date:startOfMonth});
-        else mauArray.push({mau:0,date:startOfMonth})          
-      }
-      mauArray.forEach(element => {
-        const newMau = new this.analysisUserMauModel({
-          mau: element.mau,
-          date: element.date,
-        });        
-        newMau.save();
-      });
-    }
-
-    // @Cron('* * * * * *')
-    @Cron('30 56 16 * * *')
-    async createLastYearNru() {
-      const count = 372
-      const nruArray = [];
-      for (let index = 0; index <= count; index++) {
-         const startOfDay = moment().add(-373+index, 'd').startOf('day').valueOf()
-        const endOfDay = moment().add(-373+index, 'd').endOf('day').valueOf()
-        
-        // 塞入wau資料表
-        const nruData = await this.analysisUserModel.aggregate([
-          { $match: { createdAt: { $gte: startOfDay,$lte:endOfDay } } },
-          { $group: { _id: { user:'$userid', date: '$createdAt' }, count: { $sum: 1 } } },
-          { $group: { _id:startOfDay , nru: { $sum: 1 } } },
-        ]);    
-        console.log(moment(startOfDay));
-        
-        if (nruData && nruData.length > 0) nruArray.push({nru:nruData[0].nru,date:startOfDay});
-        else nruArray.push({nru:0,date:startOfDay});       
-      }
-      console.log(nruArray);
-      
-      nruArray.forEach(element => {
-          const newNru = new this.analysisUserNruModel({
-            nru: element.nru,
-            date: element.date,
-          });        
-          newNru.save();
-        });
-    }
+    nruArray.forEach(element => {
+      const newNru = new this.analysisUserNruModel({
+        nru: element.nru,
+        date: element.date,
+      });        
+     newNru.save();
+    });   
+  }
 }
