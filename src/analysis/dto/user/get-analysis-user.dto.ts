@@ -1,15 +1,19 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class GetAnalysisUserDTO {
-  @IsNotEmpty()
+  @IsOptional()
+  @IsString()
+  account:string;
+  
+  @IsOptional()
+  @IsString()
+  accountName:string;
+  
+  @IsOptional()
   @IsString()
   startDate: string;
-
-  @IsNotEmpty()
+  
+  @IsOptional()
   @IsString()
   endDate: string;
-
-  // @IsNotEmpty()
-  // @IsString()
-  // mode: string;
 }

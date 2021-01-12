@@ -31,8 +31,12 @@ export class AnalysisController {
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async getUser(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
-    // const user = await this.analysisService.getUser(getAnalysisUserDTO)
-    // return user;
+    const user = await this.analysisService.getUser(getAnalysisUserDTO)
+    if (user) {
+      return { success: true, content: user, msg: '查詢成功' };
+    } else {
+      return { success: true, content: null, msg: '查詢成功' };
+    }
   }
   @Post('/getuserdau')
   @UseInterceptors(FileInterceptor('body'))
