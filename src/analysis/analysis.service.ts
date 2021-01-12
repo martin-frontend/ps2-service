@@ -35,72 +35,66 @@ export class AnalysisService {
   ) {}
   async createUser(createAnalysisUserDTO: CreateAnalysisUserDTO) {
     const { account, accountName } = createAnalysisUserDTO;
-    const user = await this.analysisUserModel.findOne({
+    let user = await this.analysisUserModel.findOne({
       account: account,
     });
-    if (user) {
-      const newLog = new this.analysisUserLogModel({ userid: user.id });
-      user.accountName = accountName;
-      await user.save();
-      const resLog = await newLog.save();
-      if (!resLog) throw new NotFoundException();
-      return null;
-    } else {
-      const newUser = new this.analysisUserModel(createAnalysisUserDTO);
-      const resUser = await newUser.save();
-      if (!resUser) throw new NotFoundException();
-      return resUser;
+    let log = "";
+    if (!user) {
+      user = new this.analysisUserModel(createAnalysisUserDTO);
+      log = "註冊"
+    }else{
+      log = "登入"
+      user.updatedAt = moment().valueOf();
     }
+    user.accountName = accountName;
+    await user.save();
+    const newLog = new this.analysisUserLogModel({ userid: user.id });
+    newLog.logText = log
+    await newLog.save();
+    return user;
   }
   async createUserWithDate(account: string, accountName: string, date: number) {
-    const user = await this.analysisUserModel.findOne({
+    let user = await this.analysisUserModel.findOne({
       account: account,
     });
-    if (user) {
-      const newLog = new this.analysisUserLogModel({ userid: user.id,createdAt:date });
-      user.accountName = accountName;
-      await user.save();
-      newLog.createdAt = date;
-      const resLog = await newLog.save();
-      if (!resLog) throw new NotFoundException();
-      return null;
-    } else {
-      const newUser = new this.analysisUserModel({
+    let log = "";
+    if (!user) {
+      user = new this.analysisUserModel({
         account: account,
         accountName: accountName,
       });
-      newUser.createdAt = date;
-      const resUser = await newUser.save();
-      if (!resUser) throw new NotFoundException();
-      return resUser;
+      user.createdAt = date;
+      log = "註冊"
+      await user.save();
+    }else{
+      log = "登入"
+      user.updatedAt = moment().valueOf();
     }
+    user.accountName = accountName;
+    await user.save();
+    const newLog = new this.analysisUserLogModel({ userid: user.id,createdAt:date });
+    newLog.logText = log
+    newLog.createdAt = date;
+    await newLog.save();
+    return user;
   }
   async getUser(getAnalysisUserDTO: GetAnalysisUserDTO){
-    const {account,accountName} = getAnalysisUserDTO;
+    const {account,accountName,page,pageSize} = getAnalysisUserDTO;
+    let searchObj = {}
     if(account){
-      const user = await this.analysisUserModel.find({account:account})
-      if (!user) {
-        throw new NotFoundException("not found account");
-      }
-      return user;
+      searchObj =  {account:account}
     }
     else if(accountName){
-      const user = await this.analysisUserModel.find({accountName:accountName})
-      if (!user) {
-        throw new NotFoundException("not found accountName");
-      }
-      return user;
+      searchObj =  {accountName:accountName}      
     }
-    else{
-      const user = await this.analysisUserModel.find({})
-      if (!user) {
-        throw new NotFoundException("not found accountName");
-      }
-      return user;
+    const user = await this.analysisUserModel.find(searchObj).sort({createdAt:1})
+    if (!user) {
+      throw new NotFoundException();
     }
+    return user;
   }
   async getUserLog(id:string){
-    const user = await this.analysisUserLogModel.find({userid:id})
+    const user = await this.analysisUserLogModel.find({userid:id}).sort({createdAt:1})
     return user
   }
   async getDauForToday() {
@@ -143,7 +137,7 @@ export class AnalysisService {
       }
     ])
   }
-  userAggregate (startDate) {
+  async userAggregate (startDate) {
     return this.analysisUserModel.aggregate([
       {
         $match: {
