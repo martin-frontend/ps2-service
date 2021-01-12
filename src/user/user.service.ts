@@ -4,15 +4,15 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from 'src/user/user.model';
-import { AuthorityRoles } from 'src/authority/authorityRoles.model';
+import { User,UserName } from 'src/user/user.model';
+import { AuthorityRoles,RolesName } from 'src/authority/authorityRoles.model';
 import * as moment from 'moment';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel('User') private readonly userModel: Model<User>,
-    @InjectModel('AuthorityRoles')
+    @InjectModel(UserName) private readonly userModel: Model<User>,
+    @InjectModel(RolesName)
     private readonly authorityRolesModel: Model<AuthorityRoles>,
   ) {}
   //status

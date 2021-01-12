@@ -1,3 +1,7 @@
+import { DeleteOperationAnnounceDTO } from './dto/announce/delete-operation-announce.dto';
+import { UpdateOperationAnnounceDTO } from './dto/announce/update-operation-announce.dto';
+import { AuthService } from 'src/auth/auth.service';
+import { CreateOperationAnnounceDTO } from './dto/announce/create-operation-announce.dto';
 import { UpdateOperationBanDTO } from './dto/ban/update-operation-ban.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { OperationService } from './operation.service';
@@ -14,7 +18,8 @@ import { CreateOperationBanDTO } from './dto/ban/create-operation-ban.dto';
 
 @Controller('operation')
 export class OperationController {
-  constructor(private readonly operationService: OperationService) {}
+  constructor(private readonly operationService: OperationService,
+    private readonly authService: AuthService) {}
   @Post('/createban')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
@@ -55,5 +60,58 @@ export class OperationController {
       return { success: false, content: null, msg: '查無資料' };
     }
   }
+
+
+  @Post('/createannounce')
+  @UseInterceptors(FileInterceptor('body'))
+  @UsePipes(ValidationPipe)
+  async createAnnounce(@Body() createOperationAnnounceDTO: CreateOperationAnnounceDTO) {
+    const {token} = createOperationAnnounceDTO
+    const validateUser: any = await this.authService.validateUser(
+      token
+    );
+    createOperationAnnounceDTO['creator'] = validateUser.account
+    const Announce = await this.operationService.createAnnounce(createOperationAnnounceDTO);      
+    return Announce;
+  }
+
+  @Get('/getannounce')
+  async getAnnounce() {
+    const Announces = await this.operationService.getAnnounces();
+    if (Announces) {
+      return { success: true, content: Announces, msg: '查詢成功' };
+    } else {
+      return { success: false, content: null, msg: '查無資料' };
+    }
+  }
+
+  @Post('/updateannounce')
+  @UseInterceptors(FileInterceptor('body'))
+  @UsePipes(ValidationPipe)
+  async updateAnnounce(@Body() updateOperationAnnounceDTO: UpdateOperationAnnounceDTO) {
+    const {token} = updateOperationAnnounceDTO
+    const validateUser: any = await this.authService.validateUser(
+      token
+    );
+    updateOperationAnnounceDTO['creator'] = validateUser.account
+    const Announce = await this.operationService.updateAnnounce(updateOperationAnnounceDTO);      
+    if (Announce) {
+      return { success: true, content: null, msg: '更新成功' };
+    } else {
+      return { success: false, content: null, msg: '更新失敗' };
+    }
+  }
+
+  @Post('/deleteannounce')
+  @UseInterceptors(FileInterceptor('body'))
+  @UsePipes(ValidationPipe)
+  async deleteAnnounce(@Body() deleteOperationAnnounceDTO: DeleteOperationAnnounceDTO) {
+    const result = await this.operationService.deleteAnnounce(deleteOperationAnnounceDTO);
+    if (result) {
+      return { success: true, content: null, msg: '刪除成功' };
+    } else {
+      return { success: false, content: null, msg: '刪除失敗' };
+    }
+  } 
 
 }

@@ -5,32 +5,32 @@ import { CreateAnalysisUserDTO } from './dto/user/create-analysis-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { AnalysisUserModel } from 'src/analysis/analysisUser.model';
-import { AnalysisUserLogModel } from 'src/analysis/analysisUserLog.model';
-import { AnalysisEventModel } from './analysisEvent.model';
-import { AnalysisUserDauModel } from './analysisUserDau.model';
-import { AnalysisUserWauModel } from './analysisUserWau.model';
-import { AnalysisUserMauModel } from './analysisUserMau.model';
-import { AnalysisUserNruModel } from './analysisUserNru.model';
+import { AnalysisUserModel,AnalysisUserName } from 'src/analysis/analysisUser.model';
+import { AnalysisUserLogModel,AnalysisUserLogName } from 'src/analysis/analysisUserLog.model';
+import { AnalysisEventModel,EventName } from './analysisEvent.model';
+import { AnalysisUserDauModel,AnalysisUserDauName } from './analysisUserDau.model';
+import { AnalysisUserWauModel,AnalysisUserWauName } from './analysisUserWau.model';
+import { AnalysisUserMauModel,AnalysisUserMauName } from './analysisUserMau.model';
+import { AnalysisUserNruModel,AnalysisUserNruName } from './analysisUserNru.model';
 import { Cron } from '@nestjs/schedule';
 import * as moment from 'moment';
 
 @Injectable()
 export class AnalysisService {
   constructor(
-    @InjectModel('AnalysisUser')
+    @InjectModel(AnalysisUserName)
     private readonly analysisUserModel: Model<AnalysisUserModel>,
-    @InjectModel('AnalysisUserLog')
+    @InjectModel(AnalysisUserLogName)
     private readonly analysisUserLogModel: Model<AnalysisUserLogModel>,
-    @InjectModel('AnalysisEvent')
+    @InjectModel(EventName)
     private readonly analysisEventModel: Model<AnalysisEventModel>,
-    @InjectModel('AnalysisUserDau')
+    @InjectModel(AnalysisUserDauName)
     private readonly analysisUserDauModel: Model<AnalysisUserDauModel>,
-    @InjectModel('AnalysisUserWau')
+    @InjectModel(AnalysisUserWauName)
     private readonly analysisUserWauModel: Model<AnalysisUserWauModel>,
-    @InjectModel('AnalysisUserMau')
+    @InjectModel(AnalysisUserMauName)
     private readonly analysisUserMauModel: Model<AnalysisUserMauModel>,
-    @InjectModel('AnalysisUserNru')
+    @InjectModel(AnalysisUserNruName)
     private readonly analysisUserNruModel: Model<AnalysisUserNruModel>,
   ) {}
   async createUser(createAnalysisUserDTO: CreateAnalysisUserDTO) {

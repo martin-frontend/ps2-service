@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose';
 export const operationAnnounceSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    category: { type: Number, required: true },
+    category: { type: String, required: true },
     onsaleDate: { type: Number, required: true},
     nosaleDate: { type: Number, required: true},
     content: { type: String, required: true},
@@ -29,4 +29,4 @@ export interface OperationAnnounceModel extends mongoose.Document {
   updatedAt: number;
 }
 
-export const AnnounceName = 'operationAnnounce';
+export const AnnounceName = 'OperationAnnounce';

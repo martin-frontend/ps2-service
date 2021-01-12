@@ -4,12 +4,12 @@ import { CreateRoleDTO } from './dto/create-role.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AuthorityRoles } from 'src/authority/authorityRoles.model';
+import { AuthorityRoles,RolesName } from 'src/authority/authorityRoles.model';
 
 @Injectable()
 export class AuthorityService {
   constructor(
-    @InjectModel('AuthorityRoles')
+    @InjectModel(RolesName)
     private readonly authorityRolesModel: Model<AuthorityRoles>,
   ) {}
   async createRole(createRoleDTO: CreateRoleDTO) {

@@ -1,6 +1,10 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateOperationAnnounceDTO {
+export class UpdateOperationAnnounceDTO {
+  @IsNotEmpty()
+  @IsString()
+  id: string;
+
   @IsNotEmpty()
   @IsString()
   title: string;

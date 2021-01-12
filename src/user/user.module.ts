@@ -4,13 +4,13 @@ import { UserController } from 'src/user/user.controller';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from 'src/auth/auth.service';
 import { UserSchema, UserName } from 'src/user/user.model';
-import { AuthorityRolesSchema } from 'src/authority/authorityRoles.model';
+import { AuthorityRolesSchema,RolesName } from 'src/authority/authorityRoles.model';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: UserName, schema: UserSchema }]),
     MongooseModule.forFeature([
-      { name: 'AuthorityRoles', schema: AuthorityRolesSchema },
+      { name: RolesName, schema: AuthorityRolesSchema },
     ]),
   ],
   controllers: [UserController],
