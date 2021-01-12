@@ -70,6 +70,30 @@ export class AnalysisService {
     newLog.createdAt = date;
     await newLog.save();
   }
+  async getUser(getAnalysisUserDTO: GetAnalysisUserDTO){
+    const {account,accountName} = getAnalysisUserDTO;
+    if(account){
+      const user = await this.analysisUserModel.find({account:account})
+      if (!user) {
+        throw new NotFoundException("not found account");
+      }
+      return user;
+    }
+    else if(accountName){
+      const user = await this.analysisUserModel.find({accountName:accountName})
+      if (!user) {
+        throw new NotFoundException("not found accountName");
+      }
+      return user;
+    }
+    else{
+      const user = await this.analysisUserModel.find({})
+      if (!user) {
+        throw new NotFoundException("not found accountName");
+      }
+      return user;
+    }
+  }
   async getDauForToday() {
     const _todayDate = new Date();
     _todayDate.setHours(0, 0, 0, 0);
@@ -110,7 +134,6 @@ export class AnalysisService {
       }
     ])
   }
-
   userAggregate (startDate) {
     return this.analysisUserModel.aggregate([
       {
