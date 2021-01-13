@@ -9,6 +9,10 @@ import { OperationController } from './operation.controller';
 import { OperationService } from './operation.service';
 import { AuthService } from 'src/auth/auth.service';
 import { UserName, UserSchema } from 'src/user/user.model';
+import {
+  analysisUserLogSchema,
+  AnalysisUserLogName,
+} from '../analysis/analysisUserLog.model';
 
 @Module({
   imports: [
@@ -19,6 +23,9 @@ import { UserName, UserSchema } from 'src/user/user.model';
     MongooseModule.forFeature([{ name: AnnounceName, schema: operationAnnounceSchema }]),
     MongooseModule.forFeature([{ name: BanName, schema: operationBanSchema }]),
     MongooseModule.forFeature([{ name: CategoryName, schema: operationCategorySchema }]),
+    MongooseModule.forFeature([
+      { name: AnalysisUserLogName, schema: analysisUserLogSchema },
+    ]),
   ],
   controllers: [OperationController],
   providers: [OperationService,AuthService],
