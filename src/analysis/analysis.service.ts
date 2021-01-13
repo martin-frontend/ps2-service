@@ -96,9 +96,13 @@ export class AnalysisService {
     }
     return {data:user,total:total};
   }
-  async getUserLog(id:string){
-    const user = await this.analysisUserLogModel.find({userid:id}).sort({createdAt:1})
-    return user
+  async getUserLog(account:string){
+    const user = await this.analysisUserModel.findOne({account:account});
+    if(user){
+      const userlog = await this.analysisUserLogModel.find({userid:user.id}).sort({createdAt:1})
+      return userlog
+    }
+    return null
   }
   async getDauForToday() {
     const _todayDate = new Date();

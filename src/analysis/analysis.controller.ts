@@ -41,7 +41,7 @@ export class AnalysisController {
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async getUserLog(@Body() body) {
-    const userlog = await this.analysisService.getUserLog(body.id)
+    const userlog = await this.analysisService.getUserLog(body.account)
     if (userlog) {
       return { success: true, content: userlog, msg: '查詢成功' };
     } else {
