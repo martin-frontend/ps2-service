@@ -114,7 +114,7 @@ export class AnalysisService {
           },
         },
       },
-      { $group: { _id: '$userid', count: { $sum: 1 } } },
+      { $group: { _id: '$userAccount', count: { $sum: 1 } } },
       { $group: { _id: 'ymd', dau: { $sum: 1 } } },
     ]);
     return user;
@@ -130,8 +130,8 @@ export class AnalysisService {
       },
       {
         $group: {
-          _id:"$userid"
-        }
+          _id:"$userAccount"
+        },
       },
       {
         $group: {
@@ -154,7 +154,7 @@ export class AnalysisService {
       },
       {
         $group: {
-          _id:"$userid"
+          _id:"$userAccount"
         }
       },
       {
