@@ -48,7 +48,7 @@ export class AnalysisService {
     }
     user.accountName = accountName;
     await user.save();
-    const newLog = new this.analysisUserLogModel({ userid: user.id });
+    const newLog = new this.analysisUserLogModel({ userAccount: user.account });
     newLog.logText = log
     await newLog.save();
     return user;
@@ -72,7 +72,7 @@ export class AnalysisService {
     }
     user.accountName = accountName;
     await user.save();
-    const newLog = new this.analysisUserLogModel({ userid: user.id,createdAt:date });
+    const newLog = new this.analysisUserLogModel({ userAccount: user.account,createdAt:date });
     newLog.logText = log
     newLog.createdAt = date;
     await newLog.save();
@@ -96,9 +96,12 @@ export class AnalysisService {
     }
     return {data:user,total:total};
   }
-  async getUserLog(id:string){
-    const user = await this.analysisUserLogModel.find({userid:id}).sort({createdAt:1})
-    return user
+  async getUserLog(account:string){
+    const userlog = await this.analysisUserLogModel.find({userAccount:account}).sort({createdAt:1})
+    if(userlog)
+      return userlog
+    else
+      return null
   }
   async getDauForToday() {
     const _todayDate = new Date();
