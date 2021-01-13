@@ -16,4 +16,12 @@ export class GetAnalysisUserDTO {
   @IsOptional()
   @IsString()
   endDate: string;
+
+  @IsOptional()
+  @IsString()
+  page:string;
+
+  @IsOptional()
+  @IsString()
+  pageSize:string;
 }

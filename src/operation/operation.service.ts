@@ -1,7 +1,9 @@
+import { UpdateOperationCategoryDTO } from './dto/category/update-operation-category.dto';
 import { DeleteOperationAnnounceDTO } from './dto/announce/delete-operation-announce.dto';
 import { UpdateOperationAnnounceDTO } from './dto/announce/update-operation-announce.dto';
 import { OperationAnnounceModel,AnnounceName } from './operationAnnounce.model';
 import { OperationBanModel,BanName } from './operationBan.model';
+import { OperationCategoryModel,CategoryName } from './operationCategory.model';
 import { CreateOperationAnnounceDTO } from './dto/announce/create-operation-announce.dto';
 import { UpdateOperationBanDTO } from './dto/ban/update-operation-ban.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -17,6 +19,8 @@ export class OperationService {
     private readonly operationBanModel: Model<OperationBanModel>,
     @InjectModel(AnnounceName)
     private readonly operationAnnounceModel: Model<OperationAnnounceModel>,
+    @InjectModel(CategoryName)
+    private readonly operationCategoryModel: Model<OperationCategoryModel>,
   ) {}
   
   async createBan(createOperationBanDTO: CreateOperationBanDTO) {
@@ -149,6 +153,28 @@ export class OperationService {
       return false;
     } else {
       return true;
+    }
+  }
+  async getAnnounceCategory() {
+    const Category = await this.operationCategoryModel.find({})
+    if(Category.length > 0) {
+      return Category[0].category
+    }
+    return Category
+  }
+  async updateAnnounceCategory(updateOperationCategoryDTO: UpdateOperationCategoryDTO) {
+    const haveCategory = await this.operationCategoryModel.find({})
+    console.log(haveCategory);
+    if(haveCategory.length === 0) {
+      const category = new this.operationCategoryModel(updateOperationCategoryDTO);
+      const result = await category.save();
+      return result
+    }else {
+      const haveCategoryId = haveCategory[0]._id
+      const category = await this.operationCategoryModel.findById({ _id: haveCategoryId }).exec();
+      category.category = updateOperationCategoryDTO.category
+      const result = await category.save();
+      return result
     }
   }
 }

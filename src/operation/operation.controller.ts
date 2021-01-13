@@ -2,6 +2,7 @@ import { DeleteOperationAnnounceDTO } from './dto/announce/delete-operation-anno
 import { UpdateOperationAnnounceDTO } from './dto/announce/update-operation-announce.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { CreateOperationAnnounceDTO } from './dto/announce/create-operation-announce.dto';
+import { UpdateOperationCategoryDTO } from './dto/category/update-operation-category.dto';
 import { UpdateOperationBanDTO } from './dto/ban/update-operation-ban.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { OperationService } from './operation.service';
@@ -112,6 +113,26 @@ export class OperationController {
     } else {
       return { success: false, content: null, msg: '刪除失敗' };
     }
-  } 
+  }
+  @Get('/getannouncecategory')
+  async getAnnounceCategory() {
+    const Category = await this.operationService.getAnnounceCategory();
+    if (Category) {
+      return { success: true, content: Category, msg: '查詢成功' };
+    } else {
+      return { success: false, content: null, msg: '查無資料' };
+    }
+  }
 
+  @Post('/updateannouncecategory')
+  @UseInterceptors(FileInterceptor('body'))
+  @UsePipes(ValidationPipe)
+  async updateAnnounceCategory(@Body() updateOperationCategoryDTO: UpdateOperationCategoryDTO) {
+    const result = await this.operationService.updateAnnounceCategory(updateOperationCategoryDTO);      
+    if (result) {
+      return { success: true, content: null, msg: '更新成功' };
+    } else {
+      return { success: false, content: null, msg: '更新失敗' };
+    }
+  }
 }
