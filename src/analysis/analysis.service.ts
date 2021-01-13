@@ -87,11 +87,14 @@ export class AnalysisService {
     else if(accountName){
       searchObj =  {accountName:accountName}      
     }
-    const user = await this.analysisUserModel.find(searchObj).sort({createdAt:1})
+    let _pageSize = Number(pageSize)
+    let _page = (Number(page) - 1) * Number(pageSize) + 1
+    const user = await this.analysisUserModel.find(searchObj).limit(_pageSize).skip(_page).sort({createdAt:1})
+    const total = await this.analysisUserModel.count({})
     if (!user) {
       throw new NotFoundException();
     }
-    return user;
+    return {data:user,total:total};
   }
   async getUserLog(id:string){
     const user = await this.analysisUserLogModel.find({userid:id}).sort({createdAt:1})
