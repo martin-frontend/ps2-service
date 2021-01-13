@@ -119,7 +119,7 @@ export class AnalysisService {
           },
         },
       },
-      { $group: { _id: '$userAccount', count: { $sum: 1 } } },
+      { $group: { _id: '$userid', count: { $sum: 1 } } },
       { $group: { _id: 'ymd', dau: { $sum: 1 } } },
     ]);
     return user;
@@ -135,8 +135,8 @@ export class AnalysisService {
       },
       {
         $group: {
-          _id:"$userAccount"
-        },
+          _id:"$userid"
+        }
       },
       {
         $group: {
@@ -159,7 +159,7 @@ export class AnalysisService {
       },
       {
         $group: {
-          _id:"$userAccount"
+          _id:"$userid"
         }
       },
       {
@@ -177,7 +177,7 @@ export class AnalysisService {
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
     const todayDate = moment().startOf('day').valueOf();
-    const user = await this.analysisUserDauModel.find({"date" : { $gte: _startDate, $lte: _endDate }})
+    const user = await this.analysisUserDauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
     if(_endDate >= todayDate) {
       const todayUser = await this.logModeAggregate(todayDate)
       if(todayUser.length > 0) {
@@ -196,9 +196,8 @@ export class AnalysisService {
     const { startDate, endDate } = getAnalysisUserDTO;
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
-    
     const firstDayOfWeek = moment().startOf('week').add(1,'d').valueOf()
-    const user = await this.analysisUserWauModel.find({"date" : { $gte: _startDate, $lte: _endDate }})
+    const user = await this.analysisUserWauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
     if(_endDate >= firstDayOfWeek) {
       const thisWeekUser = await this.logModeAggregate(firstDayOfWeek)
       if(thisWeekUser.length > 0) {
@@ -219,7 +218,7 @@ export class AnalysisService {
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
     const firstDayOfMonth = moment().startOf('month').valueOf()
-    const user = await this.analysisUserMauModel.find({"date" : { $gte: _startDate, $lte: _endDate }})
+    const user = await this.analysisUserMauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
     if(_endDate >= firstDayOfMonth) {
       const thisMonthUser = await this.logModeAggregate(firstDayOfMonth)
       if(thisMonthUser.length > 0) {
@@ -237,16 +236,12 @@ export class AnalysisService {
   }
   async getUserNRU(getAnalysisUserDTO: GetAnalysisUserDTO) {
     const { startDate, endDate } = getAnalysisUserDTO;
-    console.log(startDate);
-    
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
     const todayDate = moment().startOf('day').valueOf();
-    const user = await this.analysisUserNruModel.find({"date" : { $gte: _startDate, $lte: _endDate }})
-    
+    const user = await this.analysisUserNruModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
     if(_endDate >= todayDate) {
       const todayUser = await this.userAggregate(todayDate)
-      
       if(todayUser.length > 0) {
         todayUser[0]["date"] =  todayUser[0]["_id"]
         todayUser[0]["nru"] =  todayUser[0]["dau"]
@@ -256,7 +251,6 @@ export class AnalysisService {
           "nru": "0"
         }
       }
-      
       return todayUser.concat(...user)
     }
     return user;
@@ -268,7 +262,7 @@ export class AnalysisService {
     return res;
   }
   // @Cron('0 5 0 * * 1-7')
-  @Cron('00 00 00 * * *')
+  // @Cron('* * * * * *')
   async createDau() {
     const todayDate = new Date();
     todayDate.setHours(0, 0, 0, 0);
@@ -276,7 +270,8 @@ export class AnalysisService {
     const endOfDay= moment().add(-1, 'd').endOf('day').valueOf()      
     const dauData = await this.analysisUserLogModel.aggregate([
       { $match: { createdAt: { $gte: startOfDay,$lte:endOfDay } } },
-      { $group: { _id: startOfDay, dau: { $sum: 1 } } },    
+      { $group: { _id: '$userid', count: { $sum: 1 } } },
+      { $group: { _id: 'ymd', dau: { $sum: 1 } } },
     ]);
     let dau = 0;
     if(dauData && dauData.length>0)
@@ -288,15 +283,16 @@ export class AnalysisService {
     return newDau;
   }
 
-  @Cron('00 00 00 * * *')
+  // @Cron('* * * * * *')
   async createWau() {   
-    const lastWeekOfMonday = moment().add(-1, 'w').valueOf()
-    const lastWeekOfSunday = moment().add(-1, 'w').endOf('week').add(1,'d').valueOf()
+    const lastWeekOfMonday = moment().add(-1, 'w').startOf('day').valueOf()
+    const lastWeekOfSunday =moment().add(-1, 'w').endOf('day').valueOf()
 
     //塞入wau資料表
     const wauData = await this.analysisUserLogModel.aggregate([
-      { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
-      { $group: { _id: lastWeekOfMonday, wau: { $sum: 1 } } },
+        { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
+        { $group: { _id: {user:'$userid',ymd: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }}, count: { $sum: 1 } } },
+        { $group: { _id: '$_id.ymd', wau: { $sum: 1 } } },
       ]);    
     let wau = 0;
     if (wauData && wauData.length > 0) wau = wauData[0].wau;
@@ -309,15 +305,16 @@ export class AnalysisService {
     return newWau;
   }
 
-  @Cron('00 00 00 * * *')
+  // @Cron('* * * * * *')
   async createMau() {          
-      const firstOfMonth = moment().add(-1,'M').valueOf()
+      const firstOfMonth = moment().add(-1,'M').startOf('month').valueOf()
       const endOfMonth = moment().add(-1,'M').endOf('month').valueOf()
       
       //塞入mau資料表
       const mauData = await this.analysisUserLogModel.aggregate([
-        { $match: { createdAt: { $gte: firstOfMonth,$lte:endOfMonth } } },
-        { $group: { _id: firstOfMonth, mau: { $sum: 1 } } },
+          { $match: { createdAt: { $gte: firstOfMonth,$lte:endOfMonth } } },
+          { $group: { _id: { user:'$userid',date: '$createdAt'}, count: { $sum: 1 } } },
+          { $group: { _id :'date', mau: { $sum: 1 } } },
         ]);    
 
       let mau = {};
@@ -331,15 +328,16 @@ export class AnalysisService {
       return newMau;
     }  
     
-    @Cron('00 00 00 * * *')
+    //@Cron('55 03 14 * * *')
   async createNru() {          
     const startOfDay = moment().add(-1,'d').startOf('days').valueOf() 
     const lastOfDay = moment().add(-1,'d').endOf('days').valueOf() 
     
     //塞入nru資料表
     const nruData = await this.analysisUserModel.aggregate([
-      { $match: { createdAt: { $gte: startOfDay,$lte:lastOfDay } } },
-      { $group: { _id: startOfDay, nru: { $sum: 1 } } },
+        { $match: { createdAt: { $gte: startOfDay,$lte:lastOfDay } } },
+        { $group: { _id: { user:'$userid',date: '$createdAt'}, count: { $sum: 1 } } },
+        { $group: { _id :'date', nru: { $sum: 1 } } },
       ]);    
 
     let nru = {};
@@ -352,15 +350,5 @@ export class AnalysisService {
     newNru.save();
     return newNru;
   } 
-  async createNruWithArray(nruArray:any) {
-    console.log(nruArray);
-    
-    nruArray.forEach(element => {
-      const newNru = new this.analysisUserNruModel({
-        nru: element.nru,
-        date: element.date,
-      });        
-     newNru.save();
-    });   
-  }
+
 }
