@@ -1,3 +1,4 @@
+import { AnalysisUserLogModel, AnalysisUserLogName } from 'src/analysis/analysisUserLog.model';
 import { UpdateOperationCategoryDTO } from './dto/category/update-operation-category.dto';
 import { DeleteOperationAnnounceDTO } from './dto/announce/delete-operation-announce.dto';
 import { UpdateOperationAnnounceDTO } from './dto/announce/update-operation-announce.dto';
@@ -21,8 +22,10 @@ export class OperationService {
     private readonly operationAnnounceModel: Model<OperationAnnounceModel>,
     @InjectModel(CategoryName)
     private readonly operationCategoryModel: Model<OperationCategoryModel>,
+    @InjectModel(AnalysisUserLogName)
+    private readonly analysisUserLogModel: Model<AnalysisUserLogModel>,
   ) {}
-  
+
   async createBan(createOperationBanDTO: CreateOperationBanDTO) {
     //暫時這樣寫，之後要改
     const {account,releaseDate,releaseState,reason} = createOperationBanDTO
@@ -51,6 +54,9 @@ export class OperationService {
         let date = releaseDate?Number(releaseDate):9999999999999.0;
         let newBan = new this.operationBanModel({account:element,releaseDate:date,releaseState,reason});
         res = await newBan.save();
+        const newLog = new this.analysisUserLogModel({ userAccount: element });
+        newLog.logText = this.IsBan(newBan)?"停權":"復權"
+        await newLog.save();
       }
     }
     if(res){
@@ -59,6 +65,10 @@ export class OperationService {
     else{
       return {created:false,content:remainArr}
     }
+  }
+  private IsBan(ban:OperationBanModel){
+    const now = moment().valueOf()
+    return ban.releaseDate>now||ban.releaseState==='1'
   }
   async updateBan(updateOperationBanDTO: UpdateOperationBanDTO) {
     const { id,releaseDate,releaseState,reason } = updateOperationBanDTO;
@@ -72,11 +82,13 @@ export class OperationService {
       if(reason)
         ban.reason = reason;
       res = ban.save();
+      const newLog = new this.analysisUserLogModel({ userAccount: ban.account });
+      newLog.logText = this.IsBan(ban)?"停權":"復權"
+      await newLog.save();
     }
     return res;
   }
   async getBans() {
-    const now = moment().valueOf()
     const Bans = await this.operationBanModel.find({}).sort({'releaseDate':1})
     return Bans.map((ban) => ({
       id: ban.id,
@@ -84,7 +96,7 @@ export class OperationService {
       releaseDate:ban.releaseDate,
       releaseState:ban.releaseState,
       reason:ban.reason,
-      isbaned:ban.releaseDate>now||ban.releaseState==='1'
+      isbaned:this.IsBan(ban)
     }));
   }
 

@@ -1,3 +1,4 @@
+import { GetAnalysisUserLogDTO } from './dto/user/get-analysis-user-log.dto';
 import { GetAnalysisUserDTO } from './dto/user/get-analysis-user.dto';
 import { CreateAnalysisEventDTO } from './dto/event/create-analysis-event.dto';
 import { CreateAnalysisUserDTO } from './dto/user/create-analysis-user.dto';
@@ -90,16 +91,20 @@ export class AnalysisService {
     let _pageSize = Number(pageSize)
     let _page = (Number(page) - 1) * Number(pageSize)
     const user = await this.analysisUserModel.find(searchObj).limit(_pageSize).skip(_page).sort({createdAt:1})
-    const total = await this.analysisUserModel.count({})
+    const total = await this.analysisUserModel.count(searchObj)
     if (!user) {
       throw new NotFoundException();
     }
     return {data:user,total:total};
   }
-  async getUserLog(account:string){
-    const userlog = await this.analysisUserLogModel.find({userAccount:account}).sort({createdAt:1})
+  async getUserLog(getAnalysisUserLogDTO:GetAnalysisUserLogDTO){
+    const {account,page,pageSize} = getAnalysisUserLogDTO
+    let _pageSize = Number(pageSize)
+    let _page = (Number(page) - 1) * Number(pageSize)
+    const userlog = await this.analysisUserLogModel.find({userAccount:account}).limit(_pageSize).skip(_page).sort({createdAt:1})
+    const total = await this.analysisUserLogModel.count({userAccount:account})
     if(userlog)
-      return userlog
+      return {data:userlog,total:total};
     else
       return null
   }

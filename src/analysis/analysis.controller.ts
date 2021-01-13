@@ -1,3 +1,4 @@
+import { GetAnalysisUserLogDTO } from './dto/user/get-analysis-user-log.dto';
 import { CreateAnalysisEventDTO } from './dto/event/create-analysis-event.dto';
 import { CreateAnalysisUserDTO } from './dto/user/create-analysis-user.dto';
 import { GetAnalysisUserDTO } from './dto/user/get-analysis-user.dto';
@@ -40,8 +41,8 @@ export class AnalysisController {
   @Post('/getuserlog')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
-  async getUserLog(@Body() body) {
-    const userlog = await this.analysisService.getUserLog(body.account)
+  async getUserLog(@Body() getAnalysisUserLogDTO:GetAnalysisUserLogDTO) {
+    const userlog = await this.analysisService.getUserLog(getAnalysisUserLogDTO)
     if (userlog) {
       return { success: true, content: userlog, msg: '查詢成功' };
     } else {
