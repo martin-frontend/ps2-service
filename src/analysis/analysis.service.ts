@@ -169,7 +169,7 @@ export class AnalysisService {
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
     const todayDate = moment().startOf('day').valueOf();
-    const user = await this.analysisUserDauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
+    const user = await this.analysisUserDauModel.find({"date" : { $gte: _startDate, $lte: _endDate }})
     if(_endDate >= todayDate) {
       const todayUser = await this.logModeAggregate(todayDate)
       if(todayUser.length > 0) {
@@ -188,8 +188,9 @@ export class AnalysisService {
     const { startDate, endDate } = getAnalysisUserDTO;
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
+    
     const firstDayOfWeek = moment().startOf('week').add(1,'d').valueOf()
-    const user = await this.analysisUserWauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
+    const user = await this.analysisUserWauModel.find({"date" : { $gte: _startDate, $lte: _endDate }})
     if(_endDate >= firstDayOfWeek) {
       const thisWeekUser = await this.logModeAggregate(firstDayOfWeek)
       if(thisWeekUser.length > 0) {
@@ -210,7 +211,7 @@ export class AnalysisService {
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
     const firstDayOfMonth = moment().startOf('month').valueOf()
-    const user = await this.analysisUserMauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
+    const user = await this.analysisUserMauModel.find({"date" : { $gte: _startDate, $lte: _endDate }})
     if(_endDate >= firstDayOfMonth) {
       const thisMonthUser = await this.logModeAggregate(firstDayOfMonth)
       if(thisMonthUser.length > 0) {
@@ -233,7 +234,7 @@ export class AnalysisService {
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
     const todayDate = moment().startOf('day').valueOf();
-    const user = await this.analysisUserNruModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
+    const user = await this.analysisUserNruModel.find({"date" : { $gte: _startDate, $lte: _endDate }})
     
     if(_endDate >= todayDate) {
       const todayUser = await this.userAggregate(todayDate)
@@ -281,8 +282,8 @@ export class AnalysisService {
 
   @Cron('00 00 00 * * *')
   async createWau() {   
-    const lastWeekOfMonday = moment().add(-1, 'w').startOf('day').valueOf()
-    const lastWeekOfSunday =moment().add(-1, 'w').endOf('day').valueOf()
+    const lastWeekOfMonday = moment().add(-1, 'w').valueOf()
+    const lastWeekOfSunday = moment().add(-1, 'w').endOf('week').add(1,'d').valueOf()
 
     //塞入wau資料表
     const wauData = await this.analysisUserLogModel.aggregate([
@@ -302,7 +303,7 @@ export class AnalysisService {
 
   @Cron('00 00 00 * * *')
   async createMau() {          
-      const firstOfMonth = moment().add(-1,'M').startOf('month').valueOf()
+      const firstOfMonth = moment().add(-1,'M').valueOf()
       const endOfMonth = moment().add(-1,'M').endOf('month').valueOf()
       
       //塞入mau資料表

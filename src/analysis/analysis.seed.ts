@@ -74,11 +74,11 @@ export class AnalysisSeed {
   async readLastYearDau(    
     @Positional({ name: 'count', describe: '', type: 'number' }) count: number,
   ) {
-    // const count = 372
+    // const count = 376
     const dauArray = [];
     for (let index = 0; index <= count; index++) {
-       const startOfDay = moment().add(-376+index, 'd').startOf('day').valueOf()
-      const lastOfDay = moment().add(-376+index, 'd').endOf('day').valueOf()        
+       const startOfDay = moment().add(-377+index, 'd').startOf('day').valueOf()
+      const lastOfDay = moment().add(-377+index, 'd').endOf('day').valueOf()        
       // // 塞入dau資料表
       const dauData = await this.analysisUserLogModel.aggregate([
         { $match: { createdAt: { $gte: startOfDay,$lte:lastOfDay } } },
@@ -109,14 +109,13 @@ export class AnalysisSeed {
     const wauArray = [];
     for (let index = 0; index <= count; index++) {
        const lastWeekOfMonday = moment().add(-54+index, 'w').startOf('day').valueOf()
-      const lastWeekOfSunday = moment().add(-54+index, 'w').endOf('day').valueOf()
+      const lastWeekOfSunday = moment().add(-54+index, 'w').endOf('week').add(1,'d').valueOf()
 
       // 塞入wau資料表
       const wauData = await this.analysisUserLogModel.aggregate([
         { $match: { createdAt: { $gte: lastWeekOfMonday,$lte:lastWeekOfSunday } } },
         { $group: { _id: lastWeekOfMonday, wau: { $sum: 1 } } },
       ]);    
-      
       console.log(wauData);
       if (wauData && wauData.length > 0) wauArray.push({wau:wauData[0].wau,date:lastWeekOfMonday});
       else wauArray.push({wau:0,date:lastWeekOfMonday})         
@@ -171,11 +170,11 @@ export class AnalysisSeed {
   async readLastYearNru(
     @Positional({ name: 'count', describe: '', type: 'number' }) count: number,
   ) {
-    // const count = 372
+    // const count = 376
     const nruArray = [];
     for (let index = 0; index <= count; index++) {
-      const startOfDay = moment().add(-376+index, 'd').startOf('day').valueOf()
-      const endOfDay = moment().add(-376+index, 'd').endOf('day').valueOf()
+      const startOfDay = moment().add(-378+index, 'd').startOf('day').valueOf()
+      const endOfDay = moment().add(-378+index, 'd').endOf('day').valueOf()
          
       // 塞入nru資料表
       const nruData = await this.analysisUserModel.aggregate([
@@ -206,14 +205,28 @@ export class AnalysisSeed {
     @Positional({ name: 'count', describe: '', type: 'number' }) count: number,
   ) {
 
-    for (let index = 0; index <= count; index++) {
-      const addDate =-377+index
-      const lastWeekOfDay = moment().add(addDate,'days').startOf('days').valueOf()      
-      await this.analysisService.createUserWithDate(
-        username+Math.floor(Math.random() * Math.floor(10)),
-        username,
-        lastWeekOfDay,
-      );
-    }    
+    let peopleRan = 0
+    const peopleRanOffset = 500
+    let peopleNum = 0
+    for (let i = 0; i <= count; i++) {
+      let randomTimes = Math.floor(Math.random() * 1000)      
+      let addDate =-(count+1)+i      
+      let lastWeekOfDay = moment().add(addDate,'days').startOf('days').valueOf()
+      console.log(moment(lastWeekOfDay),randomTimes);
+      if(i&&i%50 === 0){
+        peopleRan += 250
+      } 
+      for (let j = 0; j <= randomTimes; j++) {
+        peopleNum = this.getRandomInt(peopleRan,peopleRan+peopleRanOffset)               
+        await this.analysisService.createUserWithDate(
+          username+peopleNum,
+          username,
+          lastWeekOfDay,
+        ); 
+      }
+    }     
+  }
+  getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }
