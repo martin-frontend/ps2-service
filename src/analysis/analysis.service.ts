@@ -88,7 +88,7 @@ export class AnalysisService {
       searchObj =  {accountName:accountName}      
     }
     let _pageSize = Number(pageSize)
-    let _page = (Number(page) - 1) * Number(pageSize) + 1
+    let _page = (Number(page) - 1) * Number(pageSize)
     const user = await this.analysisUserModel.find(searchObj).limit(_pageSize).skip(_page).sort({createdAt:1})
     const total = await this.analysisUserModel.count({})
     if (!user) {
