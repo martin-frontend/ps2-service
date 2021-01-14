@@ -118,7 +118,7 @@ export class OperationService {
       id: ban.id,
       account:ban.account,
       releaseDate:ban.releaseDate,
-      releaseState:ban.releaseState,
+      releaseState:ban.releaseState==='1'?'永久停權':'停權',
       reason:ban.reason,
     }));
     return data;

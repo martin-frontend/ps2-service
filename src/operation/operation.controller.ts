@@ -72,7 +72,7 @@ export class OperationController {
     }
   }
   @Get('/ban-list')
-  @ApiOperation({summary:"對外API",description:"取得已停權名單"})
+  @ApiOperation({summary:"對外API",description:"取得停權中名單"})
   @UsePipes(ValidationPipe)
   async getBanList() {
     const Bans = await this.operationService.getBansList();
