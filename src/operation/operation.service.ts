@@ -1,3 +1,4 @@
+import { GetOperationBanDTO } from './dto/ban/get-operation-ban.dto';
 import { AnalysisUserLogModel, AnalysisUserLogName } from 'src/analysis/analysisUserLog.model';
 import { UpdateOperationCategoryDTO } from './dto/category/update-operation-category.dto';
 import { DeleteOperationAnnounceDTO } from './dto/announce/delete-operation-announce.dto';
@@ -33,6 +34,7 @@ export class OperationService {
     let res = null;
     const now = moment().valueOf()
     let remainArr = []
+    let _reason = reason?reason:''
     for (let i = 0; i < accountArr.length; i++) {
       let element = accountArr[i];
       let Ban = await this.operationBanModel.findOne(
@@ -52,7 +54,7 @@ export class OperationService {
       }
       else{
         let date = releaseDate?Number(releaseDate):9999999999999.0;
-        let newBan = new this.operationBanModel({account:element,releaseDate:date,releaseState,reason});
+        let newBan = new this.operationBanModel({account:element,releaseDate:date,releaseState,_reason});
         res = await newBan.save();
         const newLog = new this.analysisUserLogModel({ userAccount: element });
         newLog.logText = this.IsBan(newBan)?"停權":"復權"
@@ -88,9 +90,12 @@ export class OperationService {
     }
     return res;
   }
-  async getBans() {
-    const Bans = await this.operationBanModel.find({}).sort({'releaseDate':1})
-    return Bans.map((ban) => ({
+  async getBans(getOperationBanDTO:GetOperationBanDTO) {
+    const {page,pageSize} = getOperationBanDTO
+    let _pageSize = Number(pageSize)
+    let _page = (Number(page) - 1) * Number(pageSize)
+    const Bans = await this.operationBanModel.find({}).limit(_pageSize).skip(_page).sort({releaseDate:1})
+    let data = Bans.map((ban) => ({
       id: ban.id,
       account:ban.account,
       releaseDate:ban.releaseDate,
@@ -98,6 +103,8 @@ export class OperationService {
       reason:ban.reason,
       isbaned:this.IsBan(ban)
     }));
+    const total = await this.operationBanModel.count({})
+    return {data:data,total:total};
   }
 
   async createAnnounce(createOperationAnnounceDTO:CreateOperationAnnounceDTO){

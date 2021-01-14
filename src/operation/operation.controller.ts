@@ -1,3 +1,4 @@
+import { GetOperationBanDTO } from './dto/ban/get-operation-ban.dto';
 import { DeleteOperationAnnounceDTO } from './dto/announce/delete-operation-announce.dto';
 import { UpdateOperationAnnounceDTO } from './dto/announce/update-operation-announce.dto';
 import { AuthService } from 'src/auth/auth.service';
@@ -52,9 +53,11 @@ export class OperationController {
     }
   }
 
-  @Get('/getban')
-  async getRole() {
-    const Bans = await this.operationService.getBans();
+  @Post('/getban')
+  @UseInterceptors(FileInterceptor('body'))
+  @UsePipes(ValidationPipe)
+  async getRole(@Body() getOperationBanDTO:GetOperationBanDTO) {    
+    const Bans = await this.operationService.getBans(getOperationBanDTO);
     if (Bans) {
       return { success: true, content: Bans, msg: '查詢成功' };
     } else {
