@@ -1,30 +1,27 @@
 import { DeleteUserDTO } from './dto/delete-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { CreateUserDTO } from './dto/create-user.dto';
+import { GetUserInfoDTO } from './dto/get-user-info-dto';
 import {
   Body,
   Controller,
   Get,
   Post,
-  Request,
   UseInterceptors,
-  UseGuards,
   UsePipes,
   ValidationPipe,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
-import { AuthGuard } from '../shared/auth.guard';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from 'src/auth/auth.service';
 
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
+  ApiBearerAuth, 
+  ApiOperation, 
   ApiTags,
 } from '@nestjs/swagger'
 
@@ -37,9 +34,10 @@ export class UserController {
     private readonly userService: UserService,
     private readonly authService: AuthService,
   ) {}
-  @Post('/createUser')
+  @Post('/user')
   @UsePipes(ValidationPipe)
   @UseInterceptors(FileInterceptor('body'))
+  @ApiOperation({description:"新增使用者"})
   async addUser(@Body() createUserDTO: CreateUserDTO) {
     const res = await this.userService.createUser(createUserDTO);
     switch (res) {
@@ -53,8 +51,8 @@ export class UserController {
       // error handler
     }
   }
-  @Get('/getUser')
-  // @UseGuards(new AuthGuard())
+  @Get()
+  @ApiOperation({description:"取得使用者"})
   async getUser() {
     const users = await this.userService.getUsers();
     // fix coding style
@@ -67,6 +65,7 @@ export class UserController {
   @Put('/user')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
+  @ApiOperation({description:"修改使用者"})
   async updateUser(@Body() updateUserDTO: UpdateUserDTO) {
     const users = await this.userService.updateUser(updateUserDTO);
     if (users) {
@@ -76,9 +75,10 @@ export class UserController {
     }
   }
 
-  @Delete('/user')
+  @Delete()
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
+  @ApiOperation({description:"刪除使用者"})
   async deleteUser(@Body() deleteUserDTO: DeleteUserDTO) {
     const users = await this.userService.deleteUser(deleteUserDTO);
     //TDD
@@ -92,20 +92,21 @@ export class UserController {
     }
   }
 
-  @Get('/getinfo')
-  async getinfo(@Request() req) {
+  @Get('/info')
+  @ApiOperation({description:"取得使用者資訊"})
+  async getInfo(@Query() getUserInfoDTO:GetUserInfoDTO) {    
     const validateUser: any = await this.authService.validateUser(
-      req.query.token,
+      getUserInfoDTO.token
     );
+
     if (validateUser !== null) {
       const user = await this.authService.findUserById(validateUser.id);
       const role = await this.authService.findUserRole(user.roleId);
-      console.log(role);
       
-      if (user.status)
+        if (user.status)
         return {
           success: true,
-          content: { role: role.name, roles: role.roles },
+          content: { role: role.name, roles: role.roles,accountName:user.account },
           msg: '查詢成功',
         };
     }
