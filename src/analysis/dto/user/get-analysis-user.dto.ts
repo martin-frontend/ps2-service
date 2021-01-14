@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class GetAnalysisUserDTO {
@@ -9,10 +10,12 @@ export class GetAnalysisUserDTO {
   @IsString()
   accountName:string;
   
+  @ApiProperty()
   @IsOptional()
   @IsString()
   startDate: string;
   
+  @ApiProperty()
   @IsOptional()
   @IsString()
   endDate: string;
