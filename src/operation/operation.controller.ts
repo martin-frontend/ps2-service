@@ -1,4 +1,4 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetOperationBanDTO } from './dto/ban/get-operation-ban.dto';
 import { DeleteOperationAnnounceDTO } from './dto/announce/delete-operation-announce.dto';
 import { UpdateOperationAnnounceDTO } from './dto/announce/update-operation-announce.dto';
@@ -28,6 +28,7 @@ export class OperationController {
   constructor(private readonly operationService: OperationService,
     private readonly authService: AuthService) {}
   @Post('/ban')
+  @ApiOperation({summary:"",description:"新增帳號停權"})
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async createBan(@Body() createOperationBanDTO: CreateOperationBanDTO) {
@@ -47,6 +48,7 @@ export class OperationController {
   }
   
   @Put('/ban')
+  @ApiOperation({summary:"",description:"修改帳號停權"})
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateBan(@Body() updateOperationBanDTO: UpdateOperationBanDTO) {
@@ -59,6 +61,7 @@ export class OperationController {
   }
 
   @Get('/ban')
+  @ApiOperation({summary:"對外API",description:"取得帳號停權"})
   @UsePipes(ValidationPipe)
   async getRole(@Query() getOperationBanDTO:GetOperationBanDTO) {
     const Bans = await this.operationService.getBans(getOperationBanDTO);
@@ -70,6 +73,7 @@ export class OperationController {
   }
 
   @Post('/announce')
+  @ApiOperation({summary:"",description:"新增線上公告"})
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async createAnnounce(@Body() createOperationAnnounceDTO: CreateOperationAnnounceDTO) {
@@ -83,6 +87,7 @@ export class OperationController {
   }
 
   @Get('/announce')
+  @ApiOperation({summary:"對外API",description:"取得線上公告"})
   @UsePipes(ValidationPipe)
   async getAnnounce() {
     const Announces = await this.operationService.getAnnounces();
@@ -94,6 +99,7 @@ export class OperationController {
   }
 
   @Put('/announce')
+  @ApiOperation({summary:"",description:"修改線上公告"})
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateAnnounce(@Body() updateOperationAnnounceDTO: UpdateOperationAnnounceDTO) {
@@ -111,6 +117,7 @@ export class OperationController {
   }
 
   @Delete('/announce')
+  @ApiOperation({summary:"",description:"刪除線上公告"})
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async deleteAnnounce(@Body() deleteOperationAnnounceDTO: DeleteOperationAnnounceDTO) {
@@ -121,7 +128,10 @@ export class OperationController {
       return { success: false, content: null, msg: '刪除失敗' };
     }
   }
+
   @Get('/announce/category')
+  @ApiOperation({summary:"",description:"取得線上公告分類"})
+  @UsePipes(ValidationPipe)
   async getAnnounceCategory() {
     const Category = await this.operationService.getAnnounceCategory();
     if (Category) {
@@ -132,6 +142,7 @@ export class OperationController {
   }
 
   @Put('/announce/category')
+  @ApiOperation({summary:"",description:"修改線上公告分類"})
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateAnnounceCategory(@Body() updateOperationCategoryDTO: UpdateOperationCategoryDTO) {
