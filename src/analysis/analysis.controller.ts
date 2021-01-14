@@ -14,7 +14,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { AnalysisService } from 'src/analysis/analysis.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 @ApiTags('analysis')
 @Controller('analysis')
 export class AnalysisController {
@@ -42,7 +42,7 @@ export class AnalysisController {
       return { success: true, content: null, msg: '查詢成功' };
     }
   }
-  @Get('/userlog')
+  @Get('/user/log')
   @ApiOperation({summary:"對外API",description:"查詢帳戶歷史資訊"})
   @UsePipes(ValidationPipe)
   async getUserLog(@Query() getAnalysisUserLogDTO:GetAnalysisUserLogDTO) {
@@ -53,7 +53,7 @@ export class AnalysisController {
       return { success: true, content: null, msg: '查詢成功' };
     }
   }
-  @Get('/userdau')
+  @Get('/user/dau')
   @ApiOperation({summary:"對外API",description:"查詢帳戶DAU"})
   @UsePipes(ValidationPipe)
   async getUserDAU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
@@ -65,7 +65,7 @@ export class AnalysisController {
       return { success: false, content: null, msg: '查詢失敗' };
     }
   }
-  @Get('/userwau')
+  @Get('/user/wau')
   @ApiOperation({summary:"對外API",description:"查詢帳戶WAU"})
   @UsePipes(ValidationPipe)
   async getUserWAU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
@@ -77,7 +77,7 @@ export class AnalysisController {
       return { success: false, content: null, msg: '查詢失敗' };
     }
   }
-  @Get('/usermau')
+  @Get('/user/mau')
   @ApiOperation({summary:"對外API",description:"查詢帳戶MAU"})
   @UsePipes(ValidationPipe)
   async getUserMAU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
@@ -90,7 +90,7 @@ export class AnalysisController {
     }
 
   }
-  @Get('/usernru')
+  @Get('/user/nru')
   @ApiOperation({summary:"對外API",description:"查詢帳戶NRU"})
   @UsePipes(ValidationPipe)
   async getUserNRU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
