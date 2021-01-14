@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import { LoginDTO } from './dto/login.dto';
 import {
   Controller,
@@ -11,6 +12,7 @@ import {
 import { AuthService } from 'src/auth/auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+@ApiTags('auth')
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -19,7 +21,6 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   async login(@Body() loginDTO: LoginDTO, @Response() res) {
     const user = await this.authService.login(loginDTO);
-
     if (user) {      
       if (user.status === '1') {
         const generatedjwt = await this.authService.createToken(user.id);
