@@ -20,7 +20,6 @@ import { AuthService } from 'src/auth/auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import {
-  ApiBearerAuth, 
   ApiOperation, 
   ApiTags,
 } from '@nestjs/swagger'
@@ -33,7 +32,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly authService: AuthService,
   ) {}
-  @Post('/user')
+  @Post('')
   @UsePipes(ValidationPipe)
   @UseInterceptors(FileInterceptor('body'))
   @ApiOperation({description:"新增使用者"})
@@ -61,7 +60,7 @@ export class UserController {
       return { success: false, content: null, msg: '查無資料' };
     }
   }
-  @Put('/user')
+  @Put('')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   @ApiOperation({description:"修改使用者"})
