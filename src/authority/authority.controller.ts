@@ -9,6 +9,8 @@ import {
   UseInterceptors,
   UsePipes,
   ValidationPipe,
+  Delete,
+  Put,
 } from '@nestjs/common';
 import { AuthorityService } from 'src/authority/authority.service';
 import { UserService } from 'src/user/user.service';
@@ -42,7 +44,7 @@ export class AuthorityController {
     }
   }
 
-  @Post('/updaterole')
+  @Put('/role')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateRole(@Body() updateRoleDTO: UpdateRoleDTO) {
@@ -54,7 +56,7 @@ export class AuthorityController {
     }
   }
 
-  @Post('/deleterole')
+  @Delete('/role')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async deleteRole(@Body() deleteRoleDTO: DeleteRoleDTO) {

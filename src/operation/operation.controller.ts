@@ -16,8 +16,6 @@ import {
   Body,
   Get,
   Put,
-  Req,
-  Param,
   Query,
 } from '@nestjs/common';
 import { CreateOperationBanDTO } from './dto/ban/create-operation-ban.dto';
@@ -91,7 +89,7 @@ export class OperationController {
     }
   }
 
-  @Post('/updateannounce')
+  @Put('/announce')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateAnnounce(@Body() updateOperationAnnounceDTO: UpdateOperationAnnounceDTO) {
@@ -108,7 +106,7 @@ export class OperationController {
     }
   }
 
-  @Post('/deleteannounce')
+  @Delete('/announce')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async deleteAnnounce(@Body() deleteOperationAnnounceDTO: DeleteOperationAnnounceDTO) {
@@ -129,7 +127,7 @@ export class OperationController {
     }
   }
 
-  @Post('/updateannouncecategory')
+  @Put('/announcecategory')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateAnnounceCategory(@Body() updateOperationCategoryDTO: UpdateOperationCategoryDTO) {
