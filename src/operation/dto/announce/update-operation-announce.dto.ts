@@ -2,39 +2,39 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateOperationAnnounceDTO {
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
   id: string;
   
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
   title: string;
   
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
   category: string;
   
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
   onsaleDate: string;
   
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
   nosaleDate: string;
   
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
   content: string;
   
   //cookie抓不到，備案
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
   token: string;
 }
