@@ -10,9 +10,11 @@ import {
   ValidationPipe,
   UseInterceptors,
   Body,
+  Get,
 } from '@nestjs/common';
 import { AnalysisService } from 'src/analysis/analysis.service';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('analysis')
 @Controller('analysis')
 export class AnalysisController {
   constructor(private readonly analysisService: AnalysisService) {}
@@ -27,7 +29,7 @@ export class AnalysisController {
       return { success: true, content: null, msg: '更新成功' };
     }
   }
-  @Post('/getuser')
+  @Get('/user')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async getUser(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
@@ -38,7 +40,7 @@ export class AnalysisController {
       return { success: true, content: null, msg: '查詢成功' };
     }
   }
-  @Post('/getuserlog')
+  @Get('/userlog')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async getUserLog(@Body() getAnalysisUserLogDTO:GetAnalysisUserLogDTO) {
@@ -49,7 +51,7 @@ export class AnalysisController {
       return { success: true, content: null, msg: '查詢成功' };
     }
   }
-  @Post('/getuserdau')
+  @Get('/userdau')
   @UseInterceptors(FileInterceptor('body'))
   async getUserDAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const dau = await this.analysisService.getUserDAU(getAnalysisUserDTO);
@@ -60,7 +62,7 @@ export class AnalysisController {
       return { success: false, content: null, msg: '查詢失敗' };
     }
   }
-  @Post('/getuserwau')
+  @Get('/userwau')
   @UseInterceptors(FileInterceptor('body'))
   async getUserWAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const wau = await this.analysisService.getUserWAU(getAnalysisUserDTO);
@@ -71,7 +73,7 @@ export class AnalysisController {
       return { success: false, content: null, msg: '查詢失敗' };
     }
   }
-  @Post('/getusermau')
+  @Get('/usermau')
   @UseInterceptors(FileInterceptor('body'))
   async getUserMAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const mau = await this.analysisService.getUserMAU(getAnalysisUserDTO);
@@ -83,7 +85,7 @@ export class AnalysisController {
     }
 
   }
-  @Post('/getusernru')
+  @Get('/usernru')
   @UseInterceptors(FileInterceptor('body'))
   async getUserNRU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const nru = await this.analysisService.getUserNRU(getAnalysisUserDTO);
