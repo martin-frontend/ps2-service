@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import { GetOperationBanDTO } from './dto/ban/get-operation-ban.dto';
 import { DeleteOperationAnnounceDTO } from './dto/announce/delete-operation-announce.dto';
 import { UpdateOperationAnnounceDTO } from './dto/announce/update-operation-announce.dto';
@@ -21,6 +22,7 @@ import {
 } from '@nestjs/common';
 import { CreateOperationBanDTO } from './dto/ban/create-operation-ban.dto';
 
+@ApiTags('operation')
 @Controller('operation')
 export class OperationController {
   constructor(private readonly operationService: OperationService,
@@ -67,7 +69,7 @@ export class OperationController {
     }
   }
 
-  @Post('/createannounce')
+  @Post('/announce')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async createAnnounce(@Body() createOperationAnnounceDTO: CreateOperationAnnounceDTO) {
@@ -80,7 +82,8 @@ export class OperationController {
     return Announce;
   }
 
-  @Get('/getannounce')
+  @Get('/announce')
+  @UsePipes(ValidationPipe)
   async getAnnounce() {
     const Announces = await this.operationService.getAnnounces();
     if (Announces) {
@@ -118,7 +121,7 @@ export class OperationController {
       return { success: false, content: null, msg: '刪除失敗' };
     }
   }
-  @Get('/getannouncecategory')
+  @Get('/announce/category')
   async getAnnounceCategory() {
     const Category = await this.operationService.getAnnounceCategory();
     if (Category) {
@@ -128,7 +131,7 @@ export class OperationController {
     }
   }
 
-  @Put('/announcecategory')
+  @Put('/announce/category')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateAnnounceCategory(@Body() updateOperationCategoryDTO: UpdateOperationCategoryDTO) {
