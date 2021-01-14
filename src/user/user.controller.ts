@@ -11,6 +11,8 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
+  Delete,
+  Put,
 } from '@nestjs/common';
 import { AuthGuard } from '../shared/auth.guard';
 import { UserService } from 'src/user/user.service';
@@ -52,7 +54,7 @@ export class UserController {
       return { success: false, content: null, msg: '查無資料' };
     }
   }
-  @Post('/updateuser')
+  @Put('/updateuser')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateUser(@Body() updateUserDTO: UpdateUserDTO) {
@@ -64,7 +66,7 @@ export class UserController {
     }
   }
 
-  @Post('/deleteuser')
+  @Delete('/deleteuser')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async deleteUser(@Body() deleteUserDTO: DeleteUserDTO) {
@@ -88,6 +90,8 @@ export class UserController {
     if (validateUser !== null) {
       const user = await this.authService.findUserById(validateUser.id);
       const role = await this.authService.findUserRole(user.roleId);
+      console.log(role);
+      
       if (user.status)
         return {
           success: true,
