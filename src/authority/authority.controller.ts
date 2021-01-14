@@ -44,7 +44,7 @@ export class AuthorityController {
     }
   }
 
-  @Put('/updaterole')
+  @Put('/role')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateRole(@Body() updateRoleDTO: UpdateRoleDTO) {
@@ -56,7 +56,7 @@ export class AuthorityController {
     }
   }
 
-  @Delete('/deleterole')
+  @Delete('/role')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async deleteRole(@Body() deleteRoleDTO: DeleteRoleDTO) {

@@ -43,7 +43,7 @@ export class OperationController {
     }
   }
   
-  @Put('/updateban')
+  @Put('/ban')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateBan(@Body() updateOperationBanDTO: UpdateOperationBanDTO) {
@@ -91,7 +91,7 @@ export class OperationController {
     }
   }
 
-  @Put('/updateannounce')
+  @Put('/announce')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateAnnounce(@Body() updateOperationAnnounceDTO: UpdateOperationAnnounceDTO) {
@@ -108,7 +108,7 @@ export class OperationController {
     }
   }
 
-  @Delete('/deleteannounce')
+  @Delete('/announce')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async deleteAnnounce(@Body() deleteOperationAnnounceDTO: DeleteOperationAnnounceDTO) {
@@ -129,7 +129,7 @@ export class OperationController {
     }
   }
 
-  @Put('/updateannouncecategory')
+  @Put('/announcecategory')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateAnnounceCategory(@Body() updateOperationCategoryDTO: UpdateOperationCategoryDTO) {

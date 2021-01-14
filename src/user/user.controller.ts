@@ -54,7 +54,7 @@ export class UserController {
       return { success: false, content: null, msg: '查無資料' };
     }
   }
-  @Put('/updateuser')
+  @Put('/user')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateUser(@Body() updateUserDTO: UpdateUserDTO) {
@@ -66,7 +66,7 @@ export class UserController {
     }
   }
 
-  @Delete('/deleteuser')
+  @Delete('/user')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async deleteUser(@Body() deleteUserDTO: DeleteUserDTO) {
