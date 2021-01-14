@@ -101,10 +101,27 @@ export class OperationService {
       releaseDate:ban.releaseDate,
       releaseState:ban.releaseState,
       reason:ban.reason,
-      isbaned:this.IsBan(ban)
+      isbanned:this.IsBan(ban)
     }));
     const total = await this.operationBanModel.count({})
     return {data:data,total:total};
+  }
+  async getBansList() {
+    const now = moment().valueOf()
+    const Bans = await this.operationBanModel.find({
+      $or:[
+        {releaseDate:{$gte:now}},
+        {releaseState:{$eq:'1'}}
+      ]      
+    })
+    let data = Bans.map((ban) => ({
+      id: ban.id,
+      account:ban.account,
+      releaseDate:ban.releaseDate,
+      releaseState:ban.releaseState,
+      reason:ban.reason,
+    }));
+    return data;
   }
 
   async createAnnounce(createOperationAnnounceDTO:CreateOperationAnnounceDTO){
@@ -138,6 +155,22 @@ export class OperationService {
       content:announce.content,
       creator:announce.creator,
       status:getStatus(announce.onsaleDate,announce.nosaleDate)      
+    }));
+  }
+  async getAnnouncesList() {
+    let now = moment().valueOf();
+    const Announces = await this.operationAnnounceModel.find({$and:[
+      {onsaleDate:{$lte:now}},
+      {nosaleDate:{$gte:now}}
+    ]})    
+    return Announces.map((announce) => ({
+      id: announce.id,
+      title:announce.title,
+      category:announce.category,
+      onsaleDate:announce.onsaleDate,
+      nosaleDate:announce.nosaleDate,
+      content:announce.content,
+      creator:announce.creator,
     }));
   }
   async updateAnnounce(updateOperationAnnounceDTO: UpdateOperationAnnounceDTO) {

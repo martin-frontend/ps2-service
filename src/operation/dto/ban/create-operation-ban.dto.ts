@@ -8,12 +8,12 @@ export class CreateOperationBanDTO {
   account: string;
   
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   releaseDate: string;
   
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   releaseState: string;
   

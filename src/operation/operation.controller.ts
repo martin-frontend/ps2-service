@@ -61,10 +61,21 @@ export class OperationController {
   }
 
   @Get('/ban')
-  @ApiOperation({summary:"對外API",description:"取得帳號停權"})
+  @ApiOperation({summary:"",description:"取得帳號停權"})
   @UsePipes(ValidationPipe)
-  async getRole(@Query() getOperationBanDTO:GetOperationBanDTO) {
+  async getBan(@Query() getOperationBanDTO:GetOperationBanDTO) {
     const Bans = await this.operationService.getBans(getOperationBanDTO);
+    if (Bans) {
+      return { success: true, content: Bans, msg: '查詢成功' };
+    } else {
+      return { success: false, content: null, msg: '查無資料' };
+    }
+  }
+  @Get('/ban-list')
+  @ApiOperation({summary:"對外API",description:"取得已停權名單"})
+  @UsePipes(ValidationPipe)
+  async getBanList() {
+    const Bans = await this.operationService.getBansList();
     if (Bans) {
       return { success: true, content: Bans, msg: '查詢成功' };
     } else {
@@ -87,10 +98,21 @@ export class OperationController {
   }
 
   @Get('/announce')
-  @ApiOperation({summary:"對外API",description:"取得線上公告"})
+  @ApiOperation({summary:"",description:"取得線上公告"})
   @UsePipes(ValidationPipe)
   async getAnnounce() {
     const Announces = await this.operationService.getAnnounces();
+    if (Announces) {
+      return { success: true, content: Announces, msg: '查詢成功' };
+    } else {
+      return { success: false, content: null, msg: '查無資料' };
+    }
+  }
+  @Get('/announce-list')
+  @ApiOperation({summary:"對外API",description:"取得上架中名單"})
+  @UsePipes(ValidationPipe)
+  async getAnnounceList() {
+    const Announces = await this.operationService.getAnnouncesList();
     if (Announces) {
       return { success: true, content: Announces, msg: '查詢成功' };
     } else {

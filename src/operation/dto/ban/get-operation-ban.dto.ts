@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 
 export class GetOperationBanDTO {
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   page:string;
   
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   pageSize:string;
 }
