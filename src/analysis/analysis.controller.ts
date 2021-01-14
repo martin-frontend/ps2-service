@@ -32,7 +32,7 @@ export class AnalysisController {
     }
   }
   @Get('/user')
-  @ApiOperation({summary:"對外API",description:"查詢帳戶資訊"})
+  @ApiOperation({summary:"",description:"查詢帳戶資訊"})
   @UsePipes(ValidationPipe)
   async getUser(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const user = await this.analysisService.getUser(getAnalysisUserDTO)
@@ -43,7 +43,7 @@ export class AnalysisController {
     }
   }
   @Get('/user/log')
-  @ApiOperation({summary:"對外API",description:"查詢帳戶歷史資訊"})
+  @ApiOperation({summary:"",description:"查詢帳戶歷史資訊"})
   @UsePipes(ValidationPipe)
   async getUserLog(@Query() getAnalysisUserLogDTO:GetAnalysisUserLogDTO) {
     const userlog = await this.analysisService.getUserLog(getAnalysisUserLogDTO)
@@ -54,7 +54,7 @@ export class AnalysisController {
     }
   }
   @Get('/user/dau')
-  @ApiOperation({summary:"對外API",description:"查詢帳戶DAU"})
+  @ApiOperation({summary:"",description:"查詢帳戶DAU"})
   @UsePipes(ValidationPipe)
   async getUserDAU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const dau = await this.analysisService.getUserDAU(getAnalysisUserDTO);
@@ -66,7 +66,7 @@ export class AnalysisController {
     }
   }
   @Get('/user/wau')
-  @ApiOperation({summary:"對外API",description:"查詢帳戶WAU"})
+  @ApiOperation({summary:"",description:"查詢帳戶WAU"})
   @UsePipes(ValidationPipe)
   async getUserWAU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const wau = await this.analysisService.getUserWAU(getAnalysisUserDTO);
@@ -78,7 +78,7 @@ export class AnalysisController {
     }
   }
   @Get('/user/mau')
-  @ApiOperation({summary:"對外API",description:"查詢帳戶MAU"})
+  @ApiOperation({summary:"",description:"查詢帳戶MAU"})
   @UsePipes(ValidationPipe)
   async getUserMAU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const mau = await this.analysisService.getUserMAU(getAnalysisUserDTO);
@@ -91,7 +91,7 @@ export class AnalysisController {
 
   }
   @Get('/user/nru')
-  @ApiOperation({summary:"對外API",description:"查詢帳戶NRU"})
+  @ApiOperation({summary:"",description:"查詢帳戶NRU"})
   @UsePipes(ValidationPipe)
   async getUserNRU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const nru = await this.analysisService.getUserNRU(getAnalysisUserDTO);
