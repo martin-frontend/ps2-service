@@ -11,9 +11,10 @@ import {
   UseInterceptors,
   Body,
   Get,
+  Query,
 } from '@nestjs/common';
 import { AnalysisService } from 'src/analysis/analysis.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 @ApiTags('analysis')
 @Controller('analysis')
 export class AnalysisController {
@@ -30,9 +31,8 @@ export class AnalysisController {
     }
   }
   @Get('/user')
-  @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
-  async getUser(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
+  async getUser(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const user = await this.analysisService.getUser(getAnalysisUserDTO)
     if (user) {
       return { success: true, content: user, msg: '查詢成功' };
@@ -41,9 +41,8 @@ export class AnalysisController {
     }
   }
   @Get('/userlog')
-  @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
-  async getUserLog(@Body() getAnalysisUserLogDTO:GetAnalysisUserLogDTO) {
+  async getUserLog(@Query() getAnalysisUserLogDTO:GetAnalysisUserLogDTO) {
     const userlog = await this.analysisService.getUserLog(getAnalysisUserLogDTO)
     if (userlog) {
       return { success: true, content: userlog, msg: '查詢成功' };
@@ -52,8 +51,8 @@ export class AnalysisController {
     }
   }
   @Get('/userdau')
-  @UseInterceptors(FileInterceptor('body'))
-  async getUserDAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
+  @UsePipes(ValidationPipe)
+  async getUserDAU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const dau = await this.analysisService.getUserDAU(getAnalysisUserDTO);
     const newDau = dau.map((item) => [item["date"],item["dau"]])
     if (newDau) {
@@ -63,8 +62,8 @@ export class AnalysisController {
     }
   }
   @Get('/userwau')
-  @UseInterceptors(FileInterceptor('body'))
-  async getUserWAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
+  @UsePipes(ValidationPipe)
+  async getUserWAU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const wau = await this.analysisService.getUserWAU(getAnalysisUserDTO);
     const newWau = wau.map((item) => [item["date"],item["wau"]])
     if (newWau) {
@@ -74,8 +73,8 @@ export class AnalysisController {
     }
   }
   @Get('/usermau')
-  @UseInterceptors(FileInterceptor('body'))
-  async getUserMAU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
+  @UsePipes(ValidationPipe)
+  async getUserMAU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const mau = await this.analysisService.getUserMAU(getAnalysisUserDTO);
     const newMau = mau.map((item) => [item["date"],item["mau"]])
     if (newMau) {
@@ -86,8 +85,8 @@ export class AnalysisController {
 
   }
   @Get('/usernru')
-  @UseInterceptors(FileInterceptor('body'))
-  async getUserNRU(@Body() getAnalysisUserDTO: GetAnalysisUserDTO) {
+  @UsePipes(ValidationPipe)
+  async getUserNRU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const nru = await this.analysisService.getUserNRU(getAnalysisUserDTO);
     const newNru = nru.map((item) => [item["date"],item["nru"]])
     if (newNru) {
@@ -96,10 +95,9 @@ export class AnalysisController {
       return { success: false, content: null, msg: '查詢失敗' };
     }
   }
-  @Post('/event')
-  @UseInterceptors(FileInterceptor('body'))
+  @Get('/event')
   @UsePipes(ValidationPipe)
-  async createEvent(@Body() createAnalysisEventDTO: CreateAnalysisEventDTO) {
+  async createEvent(@Query() createAnalysisEventDTO: CreateAnalysisEventDTO) {
     const event = await this.analysisService.createEvent(
       createAnalysisEventDTO,
     );
