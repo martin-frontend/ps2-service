@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import { DeleteRoleDTO } from './dto/delete-role.dto';
 import { UpdateRoleDTO } from './dto/update-role.dto';
 import { CreateRoleDTO } from './dto/create-role.dto';
@@ -16,6 +17,7 @@ import { AuthorityService } from 'src/authority/authority.service';
 import { UserService } from 'src/user/user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+@ApiTags('authority')
 @Controller('authority')
 export class AuthorityController {
   constructor(
@@ -23,7 +25,7 @@ export class AuthorityController {
     private readonly userService: UserService,
   ) {}
 
-  @Post('/createrole')
+  @Post('/role')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async createRole(@Body() createRoleDTO: CreateRoleDTO) {
@@ -34,7 +36,8 @@ export class AuthorityController {
       return { success: false, content: null, msg: '新增失敗' };
     }
   }
-  @Get('/getrole')
+  @Get('/role')
+  @UsePipes(ValidationPipe)
   async getRole() {
     const Roles = await this.authService.getRole();
     if (Roles) {
