@@ -15,6 +15,10 @@ import {
   ValidationPipe,
   Body,
   Get,
+  Put,
+  Req,
+  Param,
+  Query,
 } from '@nestjs/common';
 import { CreateOperationBanDTO } from './dto/ban/create-operation-ban.dto';
 
@@ -22,7 +26,7 @@ import { CreateOperationBanDTO } from './dto/ban/create-operation-ban.dto';
 export class OperationController {
   constructor(private readonly operationService: OperationService,
     private readonly authService: AuthService) {}
-  @Post('/createban')
+  @Post('/ban')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async createBan(@Body() createOperationBanDTO: CreateOperationBanDTO) {
@@ -41,7 +45,7 @@ export class OperationController {
     }
   }
   
-  @Post('/updateban')
+  @Put('/ban')
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateBan(@Body() updateOperationBanDTO: UpdateOperationBanDTO) {
@@ -53,10 +57,9 @@ export class OperationController {
     }
   }
 
-  @Post('/getban')
-  @UseInterceptors(FileInterceptor('body'))
+  @Get('/ban')
   @UsePipes(ValidationPipe)
-  async getRole(@Body() getOperationBanDTO:GetOperationBanDTO) {    
+  async getRole(@Query() getOperationBanDTO:GetOperationBanDTO) {
     const Bans = await this.operationService.getBans(getOperationBanDTO);
     if (Bans) {
       return { success: true, content: Bans, msg: '查詢成功' };
@@ -64,7 +67,6 @@ export class OperationController {
       return { success: false, content: null, msg: '查無資料' };
     }
   }
-
 
   @Post('/createannounce')
   @UseInterceptors(FileInterceptor('body'))
