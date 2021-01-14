@@ -7,6 +7,7 @@ export class CreateAnalysisUserDTO {
   @IsString()
   account: string;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   accountName: string;

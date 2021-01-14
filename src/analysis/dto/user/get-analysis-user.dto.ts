@@ -2,10 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class GetAnalysisUserDTO {
+  @ApiProperty()
   @IsOptional()
   @IsString()
   account:string;
   
+  @ApiProperty()
   @IsOptional()
   @IsString()
   accountName:string;
@@ -20,10 +22,12 @@ export class GetAnalysisUserDTO {
   @IsString()
   endDate: string;
 
+  @ApiProperty()
   @IsOptional()
   @IsString()
   page:string;
 
+  @ApiProperty()
   @IsOptional()
   @IsString()
   pageSize:string;

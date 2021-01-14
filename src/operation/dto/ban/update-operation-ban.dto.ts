@@ -2,23 +2,23 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateOperationBanDTO {
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    @ApiProperty()
     id: string;
     
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    @ApiProperty()
     releaseDate: string;
     
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    @ApiProperty()
     releaseState: string;
     
+    @ApiProperty()
     @IsString()
     @IsOptional()
-    @ApiProperty()
     reason: string;
 }
