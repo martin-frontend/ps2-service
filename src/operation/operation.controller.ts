@@ -17,6 +17,7 @@ import {
   Get,
   Put,
   Query,
+  Delete
 } from '@nestjs/common';
 import { CreateOperationBanDTO } from './dto/ban/create-operation-ban.dto';
 
