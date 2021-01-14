@@ -1,4 +1,4 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { DeleteRoleDTO } from './dto/delete-role.dto';
 import { UpdateRoleDTO } from './dto/update-role.dto';
 import { CreateRoleDTO } from './dto/create-role.dto';
@@ -26,6 +26,7 @@ export class AuthorityController {
   ) {}
 
   @Post('/role')
+  @ApiOperation({summary:"",description:"新增權限設定"})
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async createRole(@Body() createRoleDTO: CreateRoleDTO) {
@@ -37,6 +38,7 @@ export class AuthorityController {
     }
   }
   @Get('/role')
+  @ApiOperation({summary:"",description:"取得權限設定"})
   @UsePipes(ValidationPipe)
   async getRole() {
     const Roles = await this.authService.getRole();
@@ -48,6 +50,7 @@ export class AuthorityController {
   }
 
   @Put('/role')
+  @ApiOperation({summary:"",description:"修改權限設定"})
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async updateRole(@Body() updateRoleDTO: UpdateRoleDTO) {
@@ -60,6 +63,7 @@ export class AuthorityController {
   }
 
   @Delete('/role')
+  @ApiOperation({summary:"",description:"刪除權限設定"})
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
   async deleteRole(@Body() deleteRoleDTO: DeleteRoleDTO) {
