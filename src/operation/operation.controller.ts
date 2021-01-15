@@ -18,7 +18,8 @@ import {
   Get,
   Put,
   Query,
-  Delete
+  Delete,
+  Request
 } from '@nestjs/common';
 import { CreateOperationBanDTO } from './dto/ban/create-operation-ban.dto';
 
@@ -87,11 +88,8 @@ export class OperationController {
   @ApiOperation({summary:"",description:"新增線上公告"})
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
-  async createAnnounce(@Body() createOperationAnnounceDTO: CreateOperationAnnounceDTO) {
-    const {token} = createOperationAnnounceDTO
-    const validateUser: any = await this.authService.validateUser(
-      token
-    );
+  async createAnnounce(@Body() createOperationAnnounceDTO: CreateOperationAnnounceDTO,@Request() req) {
+    const validateUser: any = await this.authService.validateUser(req.cookies.AuthCookie);
     createOperationAnnounceDTO['creator'] = validateUser.account
     const Announce = await this.operationService.createAnnounce(createOperationAnnounceDTO);      
     return Announce;
@@ -124,11 +122,8 @@ export class OperationController {
   @ApiOperation({summary:"",description:"修改線上公告"})
   @UseInterceptors(FileInterceptor('body'))
   @UsePipes(ValidationPipe)
-  async updateAnnounce(@Body() updateOperationAnnounceDTO: UpdateOperationAnnounceDTO) {
-    const {token} = updateOperationAnnounceDTO
-    const validateUser: any = await this.authService.validateUser(
-      token
-    );
+  async updateAnnounce(@Body() updateOperationAnnounceDTO: UpdateOperationAnnounceDTO,@Request() req) {
+    const validateUser: any = await this.authService.validateUser(req.cookies.AuthCookie);
     updateOperationAnnounceDTO['creator'] = validateUser.account
     const Announce = await this.operationService.updateAnnounce(updateOperationAnnounceDTO);      
     if (Announce) {

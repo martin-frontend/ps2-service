@@ -124,8 +124,8 @@ export class OperationService {
     return data;
   }
 
-  async createAnnounce(createOperationAnnounceDTO:CreateOperationAnnounceDTO){
-    const newAnnounceModel = new this.operationAnnounceModel(createOperationAnnounceDTO);
+  async createAnnounce(data){
+    const newAnnounceModel = new this.operationAnnounceModel(data);
     const result = await newAnnounceModel.save();
     return result;
   }
