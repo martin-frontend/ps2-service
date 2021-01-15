@@ -13,6 +13,7 @@ import {
   Delete,
   Put,
   Query,
+  Request
 } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from 'src/auth/auth.service';
@@ -92,22 +93,32 @@ export class UserController {
 
   @Get('/info')
   @ApiOperation({description:"取得使用者資訊"})
-  async getInfo(@Query() getUserInfoDTO:GetUserInfoDTO) {    
-    const validateUser: any = await this.authService.validateUser(
-      getUserInfoDTO.token
-    );
-
-    if (validateUser !== null) {
-      const user = await this.authService.findUserById(validateUser.id);
-      const role = await this.authService.findUserRole(user.roleId);
-      
-        if (user.status)
-        return {
-          success: true,
-          content: { role: role.name, roles: role.roles,accountName:user.account },
-          msg: '查詢成功',
-        };
+  async getinfo(@Request() req){
+    const validateUser:any = await this.authService.validateUser(req.cookies.AuthCookie)
+    if(validateUser !== null){
+        const user = await this.authService.findUserById(validateUser.id)
+        const role = await this.authService.findUserRole(user.roleId)
+        if(user.status)
+            return { "success":true, "content":{ role:role.name,roles:role.roles },"msg":"查詢成功"}
     }
-    return { success: false, content: null, msg: '無登入權限' };
-  }
+    return {"success":false,"content":null,"msg":"無登入權限"}
+}
+  // async getInfo(@Query() getUserInfoDTO:GetUserInfoDTO) {    
+  //   const validateUser: any = await this.authService.validateUser(
+  //     getUserInfoDTO.token
+  //   );
+
+  //   if (validateUser !== null) {
+  //     const user = await this.authService.findUserById(validateUser.id);
+  //     const role = await this.authService.findUserRole(user.roleId);
+      
+  //       if (user.status)
+  //       return {
+  //         success: true,
+  //         content: { role: role.name, roles: role.roles,accountName:user.account },
+  //         msg: '查詢成功',
+  //       };
+  //   }
+  //   return { success: false, content: null, msg: '無登入權限' };
+  // }
 }
