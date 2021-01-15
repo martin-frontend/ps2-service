@@ -26,10 +26,4 @@ export class CreateOperationAnnounceDTO {
   @IsNotEmpty()
   @IsString()
   content: string;
-  
-  //cookie抓不到，備案
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  token: string;
 }

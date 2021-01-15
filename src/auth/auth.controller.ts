@@ -25,10 +25,10 @@ export class AuthController {
       if (user.status === '1') {
         const generatedjwt = await this.authService.createToken(user.id);
         //一小時過期
-        // res.cookie('AuthCookie', generatedjwt, {
-        //   maxAge: 3600 * 60000,
-        //   httpOnly: false,
-        // });
+        res.cookie('AuthCookie', generatedjwt, {
+          maxAge: 3600 * 60000,
+          httpOnly: false,
+        });
         res.send({
           success: true,
           content: { islogin: true,token:generatedjwt },
