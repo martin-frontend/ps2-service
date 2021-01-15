@@ -70,9 +70,9 @@ export class AnalysisController {
   @UsePipes(ValidationPipe)
   async getUserWAU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const wau = await this.analysisService.getUserWAU(getAnalysisUserDTO);
-    const newWau = wau.map((item) => [item["date"],item["wau"]])
-    if (newWau) {
-      return { success: true, content: newWau, msg: '查詢成功' };
+    wau.data = wau.data.map((item) => [item["date"],item["wau"]])
+    if (wau) {
+      return { success: true, content: wau, msg: '查詢成功' };
     } else {
       return { success: false, content: null, msg: '查詢失敗' };
     }
