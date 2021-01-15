@@ -178,6 +178,7 @@ export class AnalysisService {
     const _endDate = Number(endDate);
     const _pageSize = Number(pageSize)
     let user = []
+    let total = 0
     let _page = (Number(page) - 1) * Number(pageSize)
     const todayDate = moment().startOf('day').valueOf();
     if(Number(page) == 1)
@@ -188,8 +189,9 @@ export class AnalysisService {
       _page = (Number(page) - 1) * Number(pageSize) - 1
       user = await this.analysisUserDauModel.find({"date" : { $gte: _startDate, $lt: _endDate }}).limit(_pageSize).skip(_page).sort({date:-1})
     }
-    user = await this.analysisUserDauModel.find({"date" : { $gte: _startDate, $lt: _endDate }}).limit(_pageSize).skip(_page).sort({date:1})
+    // user = await this.analysisUserDauModel.find({"date" : { $gte: _startDate, $lt: _endDate }}).limit(_pageSize).skip(_page).sort({date:-1})
     if(_endDate >= todayDate && Number(page) == 1) {
+      total = await this.analysisUserDauModel.count({"date" : { $gte: _startDate, $lt: _endDate }}) + 1
       const todayUser = await this.logModeAggregate(todayDate)
       if(todayUser.length > 0) {
         todayUser[0]["date"] =  todayUser[0]["_id"]
@@ -199,9 +201,10 @@ export class AnalysisService {
           "dau": "0"
         }
       }
-      return todayUser.concat(...user)
+      return {data: todayUser.concat(...user), total:total}
     }
-    return user;
+    total = await this.analysisUserDauModel.count({"date" : { $gte: _startDate, $lt: _endDate }}) + 1
+    return {data: user, total:total};
   }
   async getUserWAU(getAnalysisUserDTO: GetAnalysisUserDTO) {
     const { startDate, endDate } = getAnalysisUserDTO;
