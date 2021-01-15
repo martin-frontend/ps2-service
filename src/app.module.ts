@@ -11,6 +11,8 @@ import { AnalysisModule } from './analysis/analysis.module';
 import { OperationModule } from './operation/operation.module';
 import { CommandModule } from 'nestjs-command';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -36,7 +38,11 @@ import { ScheduleModule } from '@nestjs/schedule';
     AnalysisModule,
     OperationModule,
     CommandModule,
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
+      serveRoot: '',
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
