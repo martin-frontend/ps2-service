@@ -99,7 +99,7 @@ export class UserController {
         const user = await this.authService.findUserById(validateUser.id)
         const role = await this.authService.findUserRole(user.roleId)
         if(user.status)
-            return { "success":true, "content":{ role:role.name,roles:role.roles },"msg":"查詢成功"}
+            return { "success":true, "content":{ role:role.name,roles:role.roles,accountName:user.account },"msg":"查詢成功"}
     }
     return {"success":false,"content":null,"msg":"無登入權限"}
 }
