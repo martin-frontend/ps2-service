@@ -91,10 +91,15 @@ export class OperationService {
     return res;
   }
   async getBans(getOperationBanDTO:GetOperationBanDTO) {
-    const {page,pageSize} = getOperationBanDTO
+    const {page,pageSize,isbanned} = getOperationBanDTO
     let _pageSize = Number(pageSize)
     let _page = (Number(page) - 1) * Number(pageSize)
-    const Bans = await this.operationBanModel.find({}).limit(_pageSize).skip(_page).sort({releaseDate:1})
+    const now = moment().valueOf()    
+    let searchData = (isbanned==='1')?{$or:[
+      {releaseDate:{$gte:now}},
+      {releaseState:{$eq:'1'}}
+    ]}:{};
+    const Bans = await this.operationBanModel.find(searchData).limit(_pageSize).skip(_page).sort({releaseDate:1})
     let data = Bans.map((ban) => ({
       id: ban.id,
       account:ban.account,
@@ -103,7 +108,7 @@ export class OperationService {
       reason:ban.reason,
       isbanned:this.IsBan(ban)
     }));
-    const total = await this.operationBanModel.count({})
+    const total = await this.operationBanModel.count(searchData)
     return {data:data,total:total};
   }
   async getBansList() {
