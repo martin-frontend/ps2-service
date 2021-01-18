@@ -191,7 +191,7 @@ export class AnalysisService {
     }
     // user = await this.analysisUserDauModel.find({"date" : { $gte: _startDate, $lt: _endDate }}).limit(_pageSize).skip(_page).sort({date:-1})
     if(_endDate >= todayDate && Number(page) == 1) {
-      total = await this.analysisUserDauModel.count({"date" : { $gte: _startDate, $lt: _endDate }}) + 1
+      total = await this.analysisUserDauModel.count({"date": { $gte: _startDate, $lt: _endDate }}) + 1
       const todayUser = await this.logModeAggregate(todayDate)
       if(todayUser.length > 0) {
         todayUser[0]["date"] =  todayUser[0]["_id"]
@@ -203,11 +203,11 @@ export class AnalysisService {
       }
       return {data: todayUser.concat(...user), total:total}
     }
-    total = await this.analysisUserDauModel.count({"date" : { $gte: _startDate, $lt: _endDate }})
+    total = await this.analysisUserDauModel.count({"date": { $gte: _startDate, $lt: _endDate }})
     return {data: user, total:total};
   }
   async getUserWAU(getAnalysisUserDTO: GetAnalysisUserDTO) {
-    const { startDate, endDate, page, pageSize  } = getAnalysisUserDTO;
+    const { startDate, endDate, page, pageSize } = getAnalysisUserDTO;
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
     const _pageSize = Number(pageSize)
@@ -217,15 +217,15 @@ export class AnalysisService {
     const firstDayOfWeek = moment().startOf('week').add(1,'d').valueOf()
     if(Number(page) == 1)
     {
-      user = await this.analysisUserWauModel.find({"date" : { $gte: _startDate, $lt: _endDate }}).limit(_pageSize-1).skip(_page).sort({date:-1})
+      user = await this.analysisUserWauModel.find({"date": { $gte: _startDate, $lt: _endDate }}).limit(_pageSize-1).skip(_page).sort({date:-1})
     }
     else{
       _page = (Number(page) - 1) * Number(pageSize) - 1
-      user = await this.analysisUserWauModel.find({"date" : { $gte: _startDate, $lt: _endDate }}).limit(_pageSize).skip(_page).sort({date:-1})
+      user = await this.analysisUserWauModel.find({"date": { $gte: _startDate, $lt: _endDate }}).limit(_pageSize).skip(_page).sort({date:-1})
     }
     // const user = await this.analysisUserWauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
     if(_endDate >= firstDayOfWeek && Number(page) == 1) {
-      total = await this.analysisUserWauModel.count({"date" : { $gte: _startDate, $lt: _endDate }}) + 1
+      total = await this.analysisUserWauModel.count({"date": { $gte: _startDate, $lt: _endDate }}) + 1
       const thisWeekUser = await this.logModeAggregate(firstDayOfWeek)
       if(thisWeekUser.length > 0) {
         thisWeekUser[0]["date"] =  thisWeekUser[0]["_id"]
@@ -236,18 +236,31 @@ export class AnalysisService {
           "wau": "0"
         }
       }
-      return {data: thisWeekUser.concat(...user), total:total}
+      return { data: thisWeekUser.concat(...user), total: total }
     }
-    total = await this.analysisUserWauModel.count({"date" : { $gte: _startDate, $lt: _endDate }})
-    return {data: user, total:total};
+    total = await this.analysisUserWauModel.count({ "date": { $gte: _startDate, $lt: _endDate }})
+    return { data: user, total: total };
   }
   async getUserMAU(getAnalysisUserDTO: GetAnalysisUserDTO) {
-    const { startDate, endDate } = getAnalysisUserDTO;
+    const { startDate, endDate, page, pageSize } = getAnalysisUserDTO;
     const _startDate = Number(startDate);
     const _endDate = Number(endDate);
+    const _pageSize = Number(pageSize)
+    let user = []
+    let total = 0
+    let _page = (Number(page) - 1) * Number(pageSize)
     const firstDayOfMonth = moment().startOf('month').valueOf()
-    const user = await this.analysisUserMauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
-    if(_endDate >= firstDayOfMonth) {
+    if(Number(page) == 1)
+    {
+      user = await this.analysisUserMauModel.find({"date": { $gte: _startDate, $lt: _endDate }}).limit(_pageSize-1).skip(_page).sort({date:-1})
+    }
+    else{
+      _page = (Number(page) - 1) * Number(pageSize) - 1
+      user = await this.analysisUserMauModel.find({"date": { $gte: _startDate, $lt: _endDate }}).limit(_pageSize).skip(_page).sort({date:-1})
+    }
+    // const user = await this.analysisUserMauModel.find({"date" : { $gte: _startDate, $lt: _endDate }})
+    if(_endDate >= firstDayOfMonth && Number(page) == 1) {
+      total = await this.analysisUserMauModel.count({"date": { $gte: _startDate, $lt: _endDate }}) + 1
       const thisMonthUser = await this.logModeAggregate(firstDayOfMonth)
       if(thisMonthUser.length > 0) {
         thisMonthUser[0]["date"] =  thisMonthUser[0]["_id"]
@@ -258,9 +271,10 @@ export class AnalysisService {
           "mau": "0"
         }
       }
-      return thisMonthUser.concat(...user)
+      return  { data: thisMonthUser.concat(...user), total: total }
     }
-    return user;
+    total = await this.analysisUserMauModel.count({ "date": { $gte: _startDate, $lt: _endDate }})
+    return { data: user, total: total };
   }
   async getUserNRU(getAnalysisUserDTO: GetAnalysisUserDTO) {
     const { startDate, endDate } = getAnalysisUserDTO;

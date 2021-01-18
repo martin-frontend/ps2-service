@@ -82,9 +82,9 @@ export class AnalysisController {
   @UsePipes(ValidationPipe)
   async getUserMAU(@Query() getAnalysisUserDTO: GetAnalysisUserDTO) {
     const mau = await this.analysisService.getUserMAU(getAnalysisUserDTO);
-    const newMau = mau.map((item) => [item["date"],item["mau"]])
-    if (newMau) {
-      return { success: true, content: newMau, msg: '查詢成功' };
+    mau.data = mau.data.map((item) => [item["date"],item["mau"]])
+    if (mau) {
+      return { success: true, content: mau, msg: '查詢成功' };
     } else {
       return { success: false, content: null, msg: '查詢失敗' };
     }
