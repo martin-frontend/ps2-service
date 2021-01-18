@@ -1,3 +1,4 @@
+import { GetOperationAnnounceDTO } from './dto/announce/get-operation-announce.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GetOperationBanDTO } from './dto/ban/get-operation-ban.dto';
 import { DeleteOperationAnnounceDTO } from './dto/announce/delete-operation-announce.dto';
@@ -98,8 +99,8 @@ export class OperationController {
   @Get('/announce')
   @ApiOperation({summary:"",description:"取得線上公告"})
   @UsePipes(ValidationPipe)
-  async getAnnounce() {
-    const Announces = await this.operationService.getAnnounces();
+  async getAnnounce(@Query() getOperationAnnounceDTO:GetOperationAnnounceDTO) {
+    const Announces = await this.operationService.getAnnounces(getOperationAnnounceDTO);
     if (Announces) {
       return { success: true, content: Announces, msg: '查詢成功' };
     } else {

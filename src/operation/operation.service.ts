@@ -1,3 +1,4 @@
+import { GetOperationAnnounceDTO } from './dto/announce/get-operation-announce.dto';
 import { GetOperationBanDTO } from './dto/ban/get-operation-ban.dto';
 import { AnalysisUserLogModel, AnalysisUserLogName } from 'src/analysis/analysisUserLog.model';
 import { UpdateOperationCategoryDTO } from './dto/category/update-operation-category.dto';
@@ -128,14 +129,16 @@ export class OperationService {
     }));
     return data;
   }
-
   async createAnnounce(data){
     const newAnnounceModel = new this.operationAnnounceModel(data);
     const result = await newAnnounceModel.save();
     return result;
   }
-  async getAnnounces() {
-    const Announces = await this.operationAnnounceModel.find({})
+  async getAnnounces(getOperationAnnounceDTO:GetOperationAnnounceDTO) {
+    const {page,pageSize} = getOperationAnnounceDTO
+    let _pageSize = Number(pageSize)
+    let _page = (Number(page) - 1) * Number(pageSize)
+    const Announces = await this.operationAnnounceModel.find({}).limit(_pageSize).skip(_page).sort({createdAt:1})
     let getStatus = (onsaleDate,nosaleDate)=>{
       let now = moment().valueOf();
       if(now<onsaleDate){
@@ -151,7 +154,8 @@ export class OperationService {
         return '3'
       }
     }
-    return Announces.map((announce) => ({
+    const total = await this.operationAnnounceModel.count({})
+    const data = Announces.map((announce) => ({
       id: announce.id,
       title:announce.title,
       category:announce.category,
@@ -161,6 +165,7 @@ export class OperationService {
       creator:announce.creator,
       status:getStatus(announce.onsaleDate,announce.nosaleDate)      
     }));
+    return {data:data,total:total};
   }
   async getAnnouncesList() {
     let now = moment().valueOf();
