@@ -13,6 +13,7 @@ import { CommandModule } from 'nestjs-command';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { join } from 'path';
       rootPath: join(__dirname, '..', 'client'),
       serveRoot: '',
     }),
+    EventModule,
   ],
   controllers: [AppController],
   providers: [AppService],
