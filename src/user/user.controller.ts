@@ -1,3 +1,4 @@
+import { GetUserDTO } from './dto/get-user.dto';
 import { DeleteUserDTO } from './dto/delete-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { CreateUserDTO } from './dto/create-user.dto';
@@ -51,8 +52,8 @@ export class UserController {
   }
   @Get()
   @ApiOperation({description:"取得使用者"})
-  async getUser() {
-    const users = await this.userService.getUsers();
+  async getUser(@Query() getUserDTO:GetUserDTO) {
+    const users = await this.userService.getUsers(getUserDTO);
     // fix coding style
     if (users) {
       return { success: true, content: users, msg: '搜尋成功' };

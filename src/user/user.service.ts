@@ -1,3 +1,4 @@
+import { GetUserDTO } from './dto/get-user.dto';
 import { DeleteUserDTO } from './dto/delete-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { CreateUserDTO } from './dto/create-user.dto';
@@ -35,8 +36,11 @@ export class UserService {
       return res ? 0 : 1;
     }
   }
-  async getUsers() {
-    const users = await this.userModel.find().exec();
+  async getUsers(getUserDTO:GetUserDTO) {
+    const {page,pageSize} = getUserDTO
+    let _pageSize = Number(pageSize)
+    let _page = (Number(page) - 1) * Number(pageSize)
+    const users = await this.userModel.find({}).limit(_pageSize).skip(_page).sort({createdAt:1})
     const resArr = [];
     for (let i = 0; i < users.length; i++) {
       const role = await this.authorityRolesModel.findOne({
@@ -59,7 +63,8 @@ export class UserService {
         ),
       });
     }
-    return resArr;
+    const total = await this.userModel.count({})
+    return {data:resArr,total:total};
   }
   async updateUser(updateUserDTO: UpdateUserDTO) {
     const { id, account, password, status, roleId } = updateUserDTO;

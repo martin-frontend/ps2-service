@@ -1,3 +1,4 @@
+import { GetRoleDTO } from './dto/get-role.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { DeleteRoleDTO } from './dto/delete-role.dto';
 import { UpdateRoleDTO } from './dto/update-role.dto';
@@ -12,6 +13,7 @@ import {
   ValidationPipe,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { AuthorityService } from 'src/authority/authority.service';
 import { UserService } from 'src/user/user.service';
@@ -40,8 +42,8 @@ export class AuthorityController {
   @Get('/role')
   @ApiOperation({summary:"",description:"取得權限設定"})
   @UsePipes(ValidationPipe)
-  async getRole() {
-    const Roles = await this.authService.getRole();
+  async getRole(@Query() getRoleDTO:GetRoleDTO) {
+    const Roles = await this.authService.getRole(getRoleDTO);
     if (Roles) {
       return { success: true, content: Roles, msg: '查詢成功' };
     } else {

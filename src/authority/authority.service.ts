@@ -1,3 +1,4 @@
+import { GetRoleDTO } from './dto/get-role.dto';
 import { DeleteRoleDTO } from './dto/delete-role.dto';
 import { UpdateRoleDTO } from './dto/update-role.dto';
 import { CreateRoleDTO } from './dto/create-role.dto';
@@ -17,14 +18,19 @@ export class AuthorityService {
     const result = await newAuthRolesModel.save();
     return result.id as string;
   }
-  async getRole() {
-    const roles = await this.authorityRolesModel.find().exec();
-    return roles.map((role) => ({
+  async getRole(getRoleDTO:GetRoleDTO) {
+    const {page,pageSize} = getRoleDTO
+    let _pageSize = Number(pageSize)
+    let _page = (Number(page) - 1) * Number(pageSize)
+    const roles = await this.authorityRolesModel.find({}).limit(_pageSize).skip(_page).sort({createdAt:1})
+    const data = roles.map((role) => ({
       id: role.id,
       roles: role.roles,
       roleLevel: role.roleLevel,
       name: role.name,
     }));
+    const total = await this.authorityRolesModel.count({})    
+    return {data:data,total:total};
   }
   async updateRole(updateRoleDTO: UpdateRoleDTO) {
     const { id, name, roles } = updateRoleDTO;
